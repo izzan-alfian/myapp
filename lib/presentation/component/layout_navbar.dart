@@ -15,7 +15,7 @@ class _LayoutNavbarState extends State<LayoutNavbar> {
     DashboardPage(),
     Attendances(),
     ProjectTaskPage(),
-    DailyReportPage(),
+    DailyReport(),
     LogisticsPage(),
   ];
 
@@ -55,9 +55,12 @@ class _LayoutNavbarState extends State<LayoutNavbar> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Theme.of(context).bottomNavigationBarTheme.selectedItemColor,
-        unselectedItemColor: Theme.of(context).bottomNavigationBarTheme.unselectedItemColor,
-        backgroundColor: Theme.of(context).bottomNavigationBarTheme.backgroundColor,
+        selectedItemColor:
+            Theme.of(context).bottomNavigationBarTheme.selectedItemColor,
+        unselectedItemColor:
+            Theme.of(context).bottomNavigationBarTheme.unselectedItemColor,
+        backgroundColor:
+            Theme.of(context).bottomNavigationBarTheme.backgroundColor,
         elevation: 0, // Menghilangkan bayangan
         onTap: _onItemTapped,
       ),
@@ -80,15 +83,6 @@ class ProjectTaskPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Text('Project & Task Content'),
-    );
-  }
-}
-
-class DailyReportPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text('Daily Report Content'),
     );
   }
 }

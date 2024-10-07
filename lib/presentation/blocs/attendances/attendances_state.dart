@@ -1,11 +1,11 @@
-import 'package:myapp/presentation/pages/attendances/attendances.dart';
+import 'package:myapp/data/models/attendances_model.dart';
 
 abstract class AttendancesState {}
 
 class AttendanceLoading extends AttendancesState {}
 
 class AttendanceLoaded extends AttendancesState {
-  final List<Attendances> attendances;
+  final List<Attendance> attendances;
 
   AttendanceLoaded(this.attendances);
 }

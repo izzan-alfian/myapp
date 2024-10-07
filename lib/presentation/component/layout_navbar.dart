@@ -13,9 +13,9 @@ class _LayoutNavbarState extends State<LayoutNavbar> {
   // List halaman yang akan ditampilkan
   static List<Widget> _pages = <Widget>[
     DashboardPage(),
-    Attendances(),
+    AttendancesPage(),
     ProjectTaskPage(),
-    DailyReport(),
+    DailyReportPage(),
     LogisticsPage(),
   ];
 

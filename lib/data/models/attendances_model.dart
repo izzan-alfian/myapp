@@ -1,10 +1,7 @@
-
-
-
-
 class Attendance {
   final String name;
   final String position;
+  final DateTime time;
   final String checkIn;
   final String checkOut;
 
@@ -12,6 +9,7 @@ class Attendance {
   Attendance({
     required this.name,
     required this.position,
+    required this.time,
     required this.checkIn,
     required this.checkOut,
   });
@@ -21,6 +19,7 @@ class Attendance {
     return Attendance(
       name: json['name'] ?? '', // Handling jika datanya null
       position: json['position'] ?? '',
+      time: DateTime.parse(json['time']),
       checkIn: json['check_in'] ?? '',
       checkOut: json['check_out'] ?? '',
     );
@@ -31,6 +30,7 @@ class Attendance {
     return {
       'name': name,
       'position': position,
+      'time': time.toIso8601String(), // Mengonversi ke format ISO 8601'
       'check_in': checkIn,
       'check_out': checkOut,
     };

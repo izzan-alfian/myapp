@@ -2,47 +2,43 @@
 // Suggested code may be subject to a license. Learn more: ~LicenseLog:1337891209.
 import 'package:flutter/material.dart';
 
-class DailyReport extends StatefulWidget {
-  const DailyReport({Key? key}) : super(key: key);
+class DailyReportPage extends StatefulWidget {
+  const DailyReportPage({Key? key}) : super(key: key);
 
   @override
-  State<DailyReport> createState() => _DailyReportPageState();
+  State<DailyReportPage> createState() => _DailyReportPageState();
 }
 
-class _DailyReportPageState extends State<DailyReport> {
+class _DailyReportPageState extends State<DailyReportPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.blue,
-        title: Row(
-          children: [
-            Expanded(
-              child: Text(
-                'Daily Report',
-                style: TextStyle(color: Colors.white),
-              ),
+        appBar: AppBar(
+          backgroundColor: Colors.blue,
+          title: Text('Attendances'),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.search),
+              onPressed: () {
+                // Logic for search action
+              },
             ),
             IconButton(
-              icon: Icon(Icons.search, color: Colors.white),
+              icon: Icon(Icons.filter_alt),
               onPressed: () {
-                // Handle search functionality here
+                // Logic for filter action
               },
             ),
           ],
         ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.filter_list, color: Colors.white),
-            onPressed: () {
-              // Handle filter functionality here
-            },
-          ),
-        ],
-      ),
-      body: Center(
-        child: Text('Daily Report lol'),
-      ),
-    );
+        body: 
+          Padding(padding: const EdgeInsets.all(12.0), child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+          Text("Hari/ Tanggal"),
+          Text("Hari/ Tanggal"),
+          Text("Hari/ Tanggal"),
+          Text("Hari/ Tanggal"),
+          Text("Hari/ Tanggal"),
+          Text("Hari/ Tanggal"),]),
+          ));
   }
 }

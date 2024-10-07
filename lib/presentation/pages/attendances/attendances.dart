@@ -38,19 +38,19 @@ class Attendances extends StatelessWidget {
            Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(20.0),
                   child: Row(
                     children: [
-                      Icon(Icons.calendar_today, color: Colors.grey),
+                      Icon(Icons.calendar_today, color: Colors.blueAccent),
                       SizedBox(width: 8),
                       Text(
-                        'Today',
+                        'Today, ',
                         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                       ),
                       SizedBox(width: 8),
                       Text(
                         '25 October 2024',
-                        style: TextStyle(fontSize: 14, color: Colors.grey),
+                        style: TextStyle(fontSize: 14),
                       ),
                     ],
                   ),
@@ -60,7 +60,7 @@ class Attendances extends StatelessWidget {
                     // itemCount: attendances.length,
                     itemBuilder: (context, index) {
                       return Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical:2),
                         child: Card(
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
@@ -70,15 +70,15 @@ class Attendances extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text(
+                                Text( 'Name'
                                   // attendances, // Ambil nama dari API
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                  // style: TextStyle(
+                                  //   fontWeight: FontWeight.bold,
+                                  // ),
                                 ),
-                                Text(
-                                  attendances[index]['position'], // Ambil posisi pekerjaan dari API
-                                  style: TextStyle(color: Colors.grey),
+                                Text( 'Job Position'
+                                  // attendances[index]['position'], // Ambil posisi pekerjaan dari API
+                                  // style: TextStyle(color: Colors.grey),
                                 ),
                               ],
                             ),

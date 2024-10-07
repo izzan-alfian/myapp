@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/presentation/pages/attendances/attendances.dart';
+import 'package:myapp/presentation/pages/daily_report/daily_report.dart';
 
 class LayoutNavbar extends StatefulWidget {
   @override

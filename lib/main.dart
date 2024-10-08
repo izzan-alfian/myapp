@@ -18,10 +18,21 @@ class MyApp extends StatelessWidget {
         BlocProvider<AttendancesBloc>(create: (context) => AttendancesBloc()..add(FetchAttendance()),)
       ],
       child: MaterialApp(
-         theme: AppTheme.lightTheme, // Atur theme jika diperlukan
-          home: LayoutNavbar(), 
+         theme: ThemeData(
+          bottomNavigationBarTheme: BottomNavigationBarThemeData(
+            backgroundColor: Colors.white, // Pastikan ini putih
+            selectedItemColor: Color(0xFF33499e),
+            unselectedItemColor: Colors.grey,
+            selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
+            unselectedLabelStyle: TextStyle(fontWeight: FontWeight.normal),
+            showUnselectedLabels: true,
+          ),
+        ),
+  home: LayoutNavbar(),
       ),
      // Menggunakan LayoutNavbar sebagai halaman utama
     );
   }
 }
+
+

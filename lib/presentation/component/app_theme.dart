@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class AppTheme {
   static ThemeData lightTheme = ThemeData(
     primaryColor: Colors.white,
-    scaffoldBackgroundColor: Color(0xFFF5F5F5), // Warna background light
+    scaffoldBackgroundColor: Color(0xFFf0f0f0), // Warna background light
     appBarTheme: AppBarTheme(
       backgroundColor: Colors.white, // Background AppBar putih
       foregroundColor: Colors.black, // Warna teks AppBar hitam
@@ -15,8 +15,8 @@ class AppTheme {
       elevation: 0, // Menghilangkan bayangan di AppBar
     ),
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
-        backgroundColor: Colors.white, // Warna background navbar putih
-        selectedItemColor: Colors.blueAccent, // Warna ikon dan teks saat dipilih
+        backgroundColor: Color(0xFFb6bdc4), // Warna background navbar putih
+        selectedItemColor: Color(0xFF33499e), // Warna ikon dan teks saat dipilih
         unselectedItemColor: Colors.grey, // Warna ikon dan teks saat tidak dipilih
         selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold), // Label tebal saat dipilih
         unselectedLabelStyle: TextStyle(fontWeight: FontWeight.normal), // Label biasa saat tidak dipilih

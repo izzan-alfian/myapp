@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/presentation/pages/attendances/attendances.dart';
 import 'package:myapp/presentation/pages/daily_report/daily_report.dart';
+import 'package:myapp/presentation/component/app_theme.dart';
 
 class LayoutNavbar extends StatefulWidget {
   @override
@@ -27,7 +28,7 @@ class _LayoutNavbarState extends State<LayoutNavbar> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+  return Scaffold(
       body: Center(
         child: _pages.elementAt(_selectedIndex),
       ),
@@ -55,13 +56,10 @@ class _LayoutNavbarState extends State<LayoutNavbar> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor:
-            Theme.of(context).bottomNavigationBarTheme.selectedItemColor,
-        unselectedItemColor:
-            Theme.of(context).bottomNavigationBarTheme.unselectedItemColor,
-        backgroundColor:
-            Theme.of(context).bottomNavigationBarTheme.backgroundColor,
-        elevation: 0, // Menghilangkan bayangan
+        selectedItemColor: Theme.of(context).bottomNavigationBarTheme.selectedItemColor,
+        unselectedItemColor: Theme.of(context).bottomNavigationBarTheme.unselectedItemColor,
+        backgroundColor: Theme.of(context).bottomNavigationBarTheme.backgroundColor,
+        elevation: 0,
         onTap: _onItemTapped,
       ),
     );
@@ -72,8 +70,13 @@ class _LayoutNavbarState extends State<LayoutNavbar> {
 class DashboardPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text('Dashboard Content'),
+    return Scaffold(
+      backgroundColor: Color(0xFFf0f0f0),
+      appBar: AppBar(
+        backgroundColor: Color(0xFFf0f0f0),
+        elevation: 0,
+        title: Text('Dashboard'),
+      ),
     );
   }
 }
@@ -81,8 +84,12 @@ class DashboardPage extends StatelessWidget {
 class ProjectTaskPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text('Project & Task Content'),
+    return Scaffold(
+      backgroundColor: Color(0xFFf0f0f0),
+      appBar: AppBar(
+        backgroundColor: Color(0xFF33499e),
+        title: Text('Project & Task', style: TextStyle(color: Colors.white)),
+      ),
     );
   }
 }
@@ -90,8 +97,12 @@ class ProjectTaskPage extends StatelessWidget {
 class LogisticsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text('Logistics Content'),
+    return Scaffold(
+      backgroundColor: Color(0xFFf0f0f0),
+      appBar: AppBar(
+        backgroundColor:Color(0xFF33499e),
+        title: Text('Logistics Report', style: TextStyle(color: Colors.white)),
+      ),
     );
   }
 }

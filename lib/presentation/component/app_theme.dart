@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class AppTheme {
   static ThemeData lightTheme = ThemeData(
-    primaryColor: Color(0x33499e),
+    primaryColor: Colors.white,
     scaffoldBackgroundColor: Color(0xFFF5F5F5), // Warna background light
     appBarTheme: AppBarTheme(
       backgroundColor: Colors.white, // Background AppBar putih
@@ -28,6 +28,6 @@ class AppTheme {
         color: Colors.black, // Warna teks utama
         fontSize: 16,
       ),
-    ), colorScheme: ColorScheme.fromSwatch().copyWith(secondary: Colors.blueAccent),
+    ), colorScheme: ColorScheme.fromSwatch().copyWith(secondary: Colors.white),
   );
 }

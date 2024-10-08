@@ -17,13 +17,13 @@ class AttendancesBloc extends Bloc<AttendancesEvent, AttendancesState> {
               checkOut: "16:00"),
           Attendance(
               name: "John Doe",
-              position: "Developer",
+              position: "Supervisor",
               time: DateTime.now(),
               checkIn: "09:00",
               checkOut: "17:00"),
           Attendance(
               name: "Jane Smith",
-              position: "Designer",
+              position: "Project Manager",
               time: DateTime.now(),
               checkIn: "08:30",
               checkOut: "16:30"),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:myapp/presentation/blocs/attendances/attendances_bloc.dart';
 import 'package:myapp/presentation/blocs/attendances/attendances_state.dart';
+import 'package:myapp/presentation/blocs/attendances/attendances_event.dart';
 import 'package:myapp/presentation/pages/attendances/attendances_backdate.dart';
 
 class AttendancesPage extends StatefulWidget {
@@ -11,6 +12,7 @@ class AttendancesPage extends StatefulWidget {
 
 class _AttendancesPageState extends State<AttendancesPage> {
   String attendanceFilter = 'All';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,6 +47,7 @@ class _AttendancesPageState extends State<AttendancesPage> {
                           attendanceFilter = 'Non-checked';
                         });
                         // Logika untuk filter 'Non-checked'
+                        _filterAndReloadAttendances();
                         Navigator.pop(context); // Menutup popup setelah memilih
                       },
                     ),
@@ -58,6 +61,7 @@ class _AttendancesPageState extends State<AttendancesPage> {
                           attendanceFilter = 'Checked in';
                         });
                         // Logika untuk filter 'Checked in'
+                        _filterAndReloadAttendances();
                         Navigator.pop(context); // Menutup popup setelah memilih
                       },
                     ),
@@ -71,6 +75,7 @@ class _AttendancesPageState extends State<AttendancesPage> {
                           attendanceFilter = 'Checked out';
                         });
                         // Logika untuk filter 'Checked out'
+                        _filterAndReloadAttendances();
                         Navigator.pop(context); // Menutup popup setelah memilih
                       },
                     ),
@@ -116,17 +121,18 @@ class _AttendancesPageState extends State<AttendancesPage> {
           Expanded(
             child: BlocBuilder<AttendancesBloc, AttendancesState>(
               builder: (context, state) {
+                print("State Changed: $state");
                 if (state is AttendanceLoading) {
                   return Center(
                     child: CircularProgressIndicator(),
                   ); // Menampilkan loading ketika fetch data
                 } else if (state is AttendanceLoaded) {
-                  final filteredAttendances = _filterAttendances(state.attendances, attendanceFilter);
+                  final filteredAttendances =
+                      _filterAttendances(state.attendances, attendanceFilter);
                   return ListView.builder(
                     itemCount: filteredAttendances.length,
                     itemBuilder: (context, index) {
-                      final attendance = filteredAttendances[index];
-                      return AttendanceItem(attendance: attendance);
+                      return AttendanceItem(attendance: state.attendances[index]);
                     },
                   );
                 } else if (state is AttendanceError) {
@@ -145,29 +151,33 @@ class _AttendancesPageState extends State<AttendancesPage> {
       ),
     );
   }
-}
 
-List<dynamic> _filterAttendances(List<dynamic> attendances, String filter) {
-  if (filter == 'Non-checked') {
-    print('Filter: Non-checked');
-    // Menggunakan properti yang benar sesuai dengan model Attendance
-    return attendances.where((attendance) => !attendance.checkIn && !attendance.checkOut).toList();
-  } else if (filter == 'Checked in') {
-     print('Filter: Checked in');
-    return attendances.where((attendance) => attendance.checkIn && !attendance.checkOut).toList();
-  } else if (filter == 'Checked out') {
-    print('Filter: Checked out');
-    return attendances.where((attendance) => attendance.checkOut).toList();
-  } else {
-    print('Filter: All');
-    return attendances; // Jika tidak ada filter, tampilkan semua data
+  void _filterAndReloadAttendances() {
+    BlocProvider.of<AttendancesBloc>(context)
+        .add(FilterAttendancesEvent(attendanceFilter));
   }
 }
 
+List<dynamic> _filterAttendances(List<dynamic> attendances, String filter) {
+  return attendances.where((attendance) {
+    // Check if checkIn and checkOut are DateTime objects and not null
+    final isCheckedIn = attendance.checkIn != null;
+    final isCheckedOut = attendance.checkOut != null;
 
-// Buat AttendanceItem Widget seperti sebelumnya
+    if (filter == 'Non-checked') {
+      return !isCheckedIn && !isCheckedOut;
+    } else if (filter == 'Checked in') {
+      return isCheckedIn && !isCheckedOut;
+    } else if (filter == 'Checked out') {
+      return isCheckedIn && isCheckedOut;
+    } else {
+      return true; // Show all if no filter is selected
+    }
+  }).toList();
+}
+
 class AttendanceItem extends StatefulWidget {
-  final dynamic attendance; // Sesuaikan tipe data attendance yang digunakan
+  final dynamic attendance;
   AttendanceItem({required this.attendance});
 
   @override
@@ -179,6 +189,15 @@ class _AttendanceItemState extends State<AttendanceItem> {
   bool isCheckedOut = false;
   DateTime? checkInTime;
   DateTime? checkOutTime;
+
+  @override
+  void initState() {
+    super.initState();
+    isCheckedIn = widget.attendance.checkIn != null;
+    isCheckedOut = widget.attendance.checkOut != null;
+    checkInTime = widget.attendance.checkIn;
+    checkOutTime = widget.attendance.checkOut;
+  }
 
   @override
   Widget build(BuildContext context) {

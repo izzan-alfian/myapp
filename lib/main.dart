@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:myapp/presentation/blocs/attendances/attendances_bloc.dart';
 import 'package:myapp/presentation/blocs/attendances/attendances_event.dart';
 import 'package:myapp/presentation/component/layout_navbar.dart';
-import 'package:myapp/presentation/component/app_theme.dart';
 
 void main() {
   runApp(MyApp());
@@ -28,8 +27,8 @@ class MyApp extends StatelessWidget {
             showUnselectedLabels: true,
           ),
         ),
-  home: LayoutNavbar(),
-      ),
+      home: LayoutNavbar(),
+          ),
      // Menggunakan LayoutNavbar sebagai halaman utama
     );
   }

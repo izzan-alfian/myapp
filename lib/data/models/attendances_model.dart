@@ -2,8 +2,8 @@ class Attendance {
   final String name;
   final String position;
   final DateTime time;
-  final String checkIn;
-  final String checkOut;
+  final bool checkIn;
+  final bool checkOut;
 
   // Constructor
   Attendance({

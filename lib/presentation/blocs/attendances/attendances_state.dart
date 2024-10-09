@@ -15,3 +15,4 @@ class AttendanceError extends AttendancesState {
 
   AttendanceError(this.message);
 }
+

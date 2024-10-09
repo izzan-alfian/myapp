@@ -13,26 +13,26 @@ class AttendancesBloc extends Bloc<AttendancesEvent, AttendancesState> {
               name: "Alexander Graham",
               position: "Manpower",
               time: DateTime.now(),
-              checkIn: "08:00",
-              checkOut: "16:00"),
+              checkIn: true,
+              checkOut: true,),
           Attendance(
               name: "John Doe",
               position: "Supervisor",
               time: DateTime.now(),
-              checkIn: "09:00",
-              checkOut: "17:00"),
+              checkIn: true,
+              checkOut:true,),
           Attendance(
               name: "Jane Smith",
               position: "Project Manager",
               time: DateTime.now(),
-              checkIn: "08:30",
-              checkOut: "16:30"),
+              checkIn: true,
+              checkOut: true,),
             Attendance(
               name: "John Wick",
               position: "Manpower",
               time: DateTime.now(),
-              checkIn: "08:30",
-              checkOut: "16:30"),
+              checkIn: true,
+              checkOut: true,),
           // Tambahkan data dummy lainnya
         ];
 

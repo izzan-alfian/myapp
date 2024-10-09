@@ -10,6 +10,7 @@ class AttendancesPage extends StatefulWidget {
 }
 
 class _AttendancesPageState extends State<AttendancesPage> {
+  String attendanceFilter = 'All';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,9 +31,54 @@ class _AttendancesPageState extends State<AttendancesPage> {
           IconButton(
             icon: Icon(Icons.filter_list, color: Colors.white),
             onPressed: () {
-              // Logic for filter action (optional if needed)
+              showMenu(
+                context: context,
+                position: RelativeRect.fromLTRB(
+                    100, 80, 0, 0), // Sesuaikan posisi popup
+                items: [
+                  PopupMenuItem(
+                    child: ListTile(
+                      leading: Icon(Icons.circle_outlined),
+                      title: Text('Non-checked'),
+                      onTap: () {
+                        setState(() {
+                          attendanceFilter = 'Non-checked';
+                        });
+                        // Logika untuk filter 'Non-checked'
+                        Navigator.pop(context); // Menutup popup setelah memilih
+                      },
+                    ),
+                  ),
+                  PopupMenuItem(
+                    child: ListTile(
+                      leading: Icon(Icons.access_time),
+                      title: Text('Checked in'),
+                      onTap: () {
+                        setState(() {
+                          attendanceFilter = 'Checked in';
+                        });
+                        // Logika untuk filter 'Checked in'
+                        Navigator.pop(context); // Menutup popup setelah memilih
+                      },
+                    ),
+                  ),
+                  PopupMenuItem(
+                    child: ListTile(
+                      leading: Icon(Icons.check_circle_outline),
+                      title: Text('Checked out'),
+                      onTap: () {
+                        setState(() {
+                          attendanceFilter = 'Checked out';
+                        });
+                        // Logika untuk filter 'Checked out'
+                        Navigator.pop(context); // Menutup popup setelah memilih
+                      },
+                    ),
+                  ),
+                ],
+              );
             },
-          ),
+          )
         ],
       ),
       body: Column(
@@ -42,26 +88,16 @@ class _AttendancesPageState extends State<AttendancesPage> {
             padding: const EdgeInsets.all(10.0),
             child: Row(
               children: [
-               IconButton(
+                IconButton(
                   icon: Icon(Icons.calendar_today, color: Color(0xFF33499e)),
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => AttendancesBackdate()),
+                      MaterialPageRoute(
+                          builder: (context) => AttendancesBackdate()),
                     );
                   },
                 ),
-
-              
-                // onPressed: () {
-                //   Navigator.push(
-                //     context,
-                //     MaterialPageRoute(
-                //       builder: (context) => AttendancesBackdatePage(),
-                //     ),
-                //   );
-                // },
-              
                 SizedBox(width: 2),
                 Text(
                   'Today',
@@ -85,10 +121,11 @@ class _AttendancesPageState extends State<AttendancesPage> {
                     child: CircularProgressIndicator(),
                   ); // Menampilkan loading ketika fetch data
                 } else if (state is AttendanceLoaded) {
+                  final filteredAttendances = _filterAttendances(state.attendances, attendanceFilter);
                   return ListView.builder(
-                    itemCount: state.attendances.length,
+                    itemCount: filteredAttendances.length,
                     itemBuilder: (context, index) {
-                      final attendance = state.attendances[index];
+                      final attendance = filteredAttendances[index];
                       return AttendanceItem(attendance: attendance);
                     },
                   );
@@ -109,6 +146,24 @@ class _AttendancesPageState extends State<AttendancesPage> {
     );
   }
 }
+
+List<dynamic> _filterAttendances(List<dynamic> attendances, String filter) {
+  if (filter == 'Non-checked') {
+    print('Filter: Non-checked');
+    // Menggunakan properti yang benar sesuai dengan model Attendance
+    return attendances.where((attendance) => !attendance.checkIn && !attendance.checkOut).toList();
+  } else if (filter == 'Checked in') {
+     print('Filter: Checked in');
+    return attendances.where((attendance) => attendance.checkIn && !attendance.checkOut).toList();
+  } else if (filter == 'Checked out') {
+    print('Filter: Checked out');
+    return attendances.where((attendance) => attendance.checkOut).toList();
+  } else {
+    print('Filter: All');
+    return attendances; // Jika tidak ada filter, tampilkan semua data
+  }
+}
+
 
 // Buat AttendanceItem Widget seperti sebelumnya
 class AttendanceItem extends StatefulWidget {
@@ -174,9 +229,9 @@ class _AttendanceItemState extends State<AttendanceItem> {
   // Fungsi untuk mendapatkan ikon sesuai status
   IconData _getIcon() {
     if (!isCheckedIn) {
-      return Icons.access_time; // Ikon untuk check-in (jam)
+      return Icons.circle_outlined; // Ikon untuk check-in (jam)
     } else if (isCheckedIn && !isCheckedOut) {
-      return Icons.check_circle_outline; // Ikon untuk check-out (ceklis bulat)
+      return Icons.access_time; // Ikon untuk check-out (ceklis bulat)
     } else if (isCheckedOut) {
       return Icons.check_circle_outline; // Ikon untuk check-in kembali
     } else {

@@ -21,6 +21,7 @@ class AppTheme {
         selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold), // Label tebal saat dipilih
         unselectedLabelStyle: TextStyle(fontWeight: FontWeight.normal), // Label biasa saat tidak dipilih
         showUnselectedLabels: true, // Menampilkan label pada item yang tidak dipilih
+        elevation:0
       ),
 
     textTheme: const TextTheme(

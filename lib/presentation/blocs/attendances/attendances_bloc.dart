@@ -1,7 +1,29 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:myapp/data/models/attendances_model.dart';
+import 'package:myapp/data/repositories/attendances/attendances_repository.dart';
 import 'package:myapp/presentation/blocs/attendances/attendances_event.dart';
 import 'package:myapp/presentation/blocs/attendances/attendances_state.dart';
+
+// class AttendancesBloc extends Bloc<AttendancesEvent, AttendancesState> {
+//   final AttendancesRepository attendanceRepository;
+
+//   AttendancesBloc({required this.attendanceRepository}) : super(AttendanceInitial()) {
+//     on<FetchAttendanceByDate>(_onFetchAttendanceByDate);
+//   }
+
+//   void _onFetchAttendanceByDate(FetchAttendanceByDate event, Emitter<AttendancesState> emit) async {
+//     emit(AttendanceLoading()); // Tampilkan loading saat proses berlangsung
+    
+//     try {
+//       // Ambil data dari repository
+//       final attendances = await attendanceRepository.getAttendancesByDate(event.date);
+//       emit(AttendanceLoaded(attendances)); // Emit state data yang sudah dimuat
+//     } catch (error) {
+//       emit(AttendanceError("Failed to load attendance data")); // Emit error jika gagal
+//     }
+//   }
+// }
+
 
 class AttendancesBloc extends Bloc<AttendancesEvent, AttendancesState> {
   List<Attendance> allAttendances = [];
@@ -100,28 +122,18 @@ class AttendancesBloc extends Bloc<AttendancesEvent, AttendancesState> {
                attendance.checkIn!.day == date.day;
       }).toList();
       
-      emit(AttendanceLoaded(filteredAttendances));
-      try {
-      emit(AttendanceLoading()); // Tampilkan loading saat proses berlangsung
-      final attendances = await attendanceRepository.getAttendancesByDate(event.date); // Ambil data berdasarkan tanggal
-      emit(AttendanceLoaded(attendances)); // Tampilkan data kehadiran yang sudah dimuat
-    } catch (error) {
-      emit(AttendanceError("Failed to load attendance data")); // Tampilkan pesan error jika gagal
-  }
-    }
+  //     emit(AttendanceLoaded(filteredAttendances));
+  //     try {
+  //     emit(AttendanceLoading()); // Tampilkan loading saat proses berlangsung
+  //     final attendances = await attendanceRepository.getAttendancesByDate(event.date); // Ambil data berdasarkan tanggal
+  //     emit(AttendanceLoaded(attendances)); // Tampilkan data kehadiran yang sudah dimuat
+  //   } catch (error) {
+  //     emit(AttendanceError("Failed to load attendance data")); // Tampilkan pesan error jika gagal
+  // }
+     }
   }
 
-//   @override
-//   // ignore: use_function_type_syntax_for_parameters
-//   void on<FetchAttendanceByDate>((event, emit) async {
-//   try {
-//     emit(AttendanceLoading()); // Tampilkan loading saat proses berlangsung
-//     final attendances = await attendanceRepository.getAttendancesByDate(event.date); // Ambil data berdasarkan tanggal
-//     emit(AttendanceLoaded(attendances)); // Tampilkan data kehadiran yang sudah dimuat
-//   } catch (error) {
-//     emit(AttendanceError("Failed to load attendance data")); // Tampilkan pesan error jika gagal
-//   }
-// });
+
 
 
 void _onFilterAttendances(FilterAttendancesEvent event, Emitter<AttendancesState> emit) {

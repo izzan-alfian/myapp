@@ -43,6 +43,7 @@ class _AttendancesBackdateState extends State<AttendancesBackdate> {
                   });
 
                   // Panggil event untuk memuat data kehadiran berdasarkan tanggal yang dipilih
+                   print("Selected day: $selectedDay"); // Debugging log
                   context.read<AttendancesBloc>().add(FetchAttendanceByDate(date: selectedDay));
                 },
               onFormatChanged: (format) {

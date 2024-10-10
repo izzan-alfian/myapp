@@ -36,16 +36,26 @@ class _AttendancesBackdateState extends State<AttendancesBackdate> {
               selectedDayPredicate: (day) {
                 return isSameDay(_selectedDay, day);
               },
-              onDaySelected: (selectedDay, focusedDay) {
+              onDaySelected: (selectedDay, focusedDay) async {
+                // Pilih waktu setelah memilih tanggal
+                TimeOfDay? selectedTime = await _selectTime(context);
+                if (selectedTime != null) {
                   setState(() {
-                    _selectedDay = selectedDay;
-                    _focusedDay = focusedDay; // update focus day
+                    // Gabungkan tanggal dan waktu ke dalam DateTime
+                    _selectedDay = DateTime(
+                      selectedDay.year,
+                      selectedDay.month,
+                      selectedDay.day,
+                      selectedTime.hour,
+                      selectedTime.minute,
+                    );
+                    _focusedDay = focusedDay;
                   });
 
-                  // Panggil event untuk memuat data kehadiran berdasarkan tanggal yang dipilih
-                   print("Selected day: $selectedDay"); // Debugging log
-                  context.read<AttendancesBloc>().add(FetchAttendanceByDate(date: selectedDay));
-                },
+                  print("Selected Date and Time: $_selectedDay"); // Debugging log
+                  context.read<AttendancesBloc>().add(FetchAttendanceByDate(date: _selectedDay!));
+                }
+              },
               onFormatChanged: (format) {
                 setState(() {
                   _calendarFormat = format;
@@ -94,6 +104,14 @@ class _AttendancesBackdateState extends State<AttendancesBackdate> {
     );
   }
 
+  Future<TimeOfDay?> _selectTime(BuildContext context) async {
+    final TimeOfDay? selectedTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+    return selectedTime;
+  }
+
   void _showYearPicker(BuildContext context) {
     showDialog(
       context: context,
@@ -121,6 +139,7 @@ class _AttendancesBackdateState extends State<AttendancesBackdate> {
     );
   }
 }
+
 
 
 

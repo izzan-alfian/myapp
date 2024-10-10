@@ -1,6 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:myapp/presentation/blocs/daily_report/daily_report_bloc.dart';
+import 'package:myapp/presentation/blocs/daily_report/daily_report_event.dart';
+import 'package:myapp/presentation/blocs/daily_report/daily_report_state.dart';
+import 'package:myapp/data/repositories/planner_consultant_repository_impl.dart';
+import 'package:myapp/data/repositories/project_repository_impl.dart';
+import 'package:myapp/data/repositories/service_provider_repository_impl.dart';
+import 'package:myapp/data/repositories/supervisor_consultant_repository_impl.dart';
+
 class DailyReportPage extends StatefulWidget {
   const DailyReportPage({Key? key}) : super(key: key);
 
@@ -271,7 +281,34 @@ class _DailyReportPageState extends State<DailyReportPage> {
             Step(
               title: _step == 1 ? const Text('Task progress') : const Text(''),
               isActive: _step >= 1,
-              content: Text('Content for Step 2'),
+              content: BlocProvider(
+                create: (context) => DailyReportBloc(
+                  projectRepository: ProjectRepositoryImpl(),
+                  serviceProviderRepository: ServiceProviderRepositoryImpl(),
+                  supervisorConsultantRepository: SupervisorConsultantRepositoryImpl(),
+                  plannerConsultantRepository: PlannerConsultantRepositoryImpl(),
+                )..add(FetchDailyReportData()),
+                child: BlocBuilder<DailyReportBloc, DailyReportState>(
+                  builder: (context, state) {
+                    if (state is DailyReportLoading) {
+                      return Center(child: CircularProgressIndicator());
+                    } else if (state is DailyReportLoaded) {
+                      return Column(
+                        children: [
+                          _buildListSection("Projects", state.projects),
+                          _buildListSection("Service Providers", state.serviceProviders),
+                          _buildListSection("Supervisor Consultants", state.supervisorConsultants),
+                          _buildListSection("Planner Consultants", state.plannerConsultants),
+                        ],
+                      );
+                    } else if (state is DailyReportError) {
+                      return Center(child: Text(state.message));
+                    } else {
+                      return Container();
+                    }
+                  },
+                ),
+              ),
             ),
             Step(
               title: _step == 2 ? const Text('Weather') : const Text(''),
@@ -311,5 +348,21 @@ class _DailyReportPageState extends State<DailyReportPage> {
             ),
           ],
         ));
+  }
+
+  Widget _buildListSection(String title, List<String> items) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            title,
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+        ),
+        ...items.map((item) => ListTile(title: Text(item))).toList(),
+      ],
+    );
   }
 }

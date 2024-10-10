@@ -21,6 +21,26 @@ class AttendancesBloc extends Bloc<AttendancesEvent, AttendancesState> {
         Attendance(name: "John Doe", position: "Supervisor"),
         Attendance(name: "Jane Smith", position: "Project Manager"),
         Attendance(name: "John Wick", position: "Manpower"),
+
+    Attendance(
+      name: 'John Doe',
+      position: 'Developer',
+      checkIn: DateTime(selectedDate.year, selectedDate.month, selectedDate.day, 9, 0),
+      checkOut: DateTime(selectedDate.year, selectedDate.month, selectedDate.day, 17, 0),
+    ),
+    Attendance(
+      name: 'Jane Smith',
+      position: 'Designer',
+      checkIn: DateTime(selectedDate.year, selectedDate.month, selectedDate.day, 9, 15),
+      checkOut: DateTime(selectedDate.year, selectedDate.month, selectedDate.day, 16, 45),
+    ),
+    Attendance(
+      name: 'Michael Johnson',
+      position: 'Manager',
+      checkIn: DateTime(selectedDate.year, selectedDate.month, selectedDate.day, 10, 0),
+      checkOut: null, // Belum check out
+    ),
+    // Tambahkan lebih banyak data dummy sesuai kebutuhan
       ];
       emit(AttendanceLoaded(allAttendances));
     } catch (e) {

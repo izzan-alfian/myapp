@@ -9,17 +9,18 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  // Tidak perlu StatefulWidget jika hanya menampilkan LayoutNavbar
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<AttendancesBloc>(create: (context) => AttendancesBloc()..add(FetchAttendance()),)
+        BlocProvider<AttendancesBloc>(
+          create: (context) => AttendancesBloc()..add(FetchAttendance(date: DateTime.now())),
+        )
       ],
       child: MaterialApp(
-         theme: ThemeData(
+        theme: ThemeData(
           bottomNavigationBarTheme: BottomNavigationBarThemeData(
-            backgroundColor: Colors.white, // Pastikan ini putih
+            backgroundColor: Colors.white,
             selectedItemColor: Color(0xFF33499e),
             unselectedItemColor: Colors.grey,
             selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
@@ -27,11 +28,8 @@ class MyApp extends StatelessWidget {
             showUnselectedLabels: true,
           ),
         ),
-      home: LayoutNavbar(),
-          ),
-     // Menggunakan LayoutNavbar sebagai halaman utama
+        home: LayoutNavbar(),
+      ),
     );
   }
 }
-
-

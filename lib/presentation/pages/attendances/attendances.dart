@@ -6,7 +6,9 @@ import 'package:myapp/data/models/attendances_model.dart';
 import 'package:myapp/presentation/blocs/attendances/attendances_bloc.dart';
 import 'package:myapp/presentation/blocs/attendances/attendances_state.dart';
 import 'package:myapp/presentation/blocs/attendances/attendances_event.dart';
-import 'package:myapp/presentation/pages/attendances/attendances_backdate.dart';
+import 'package:myapp/presentation/widgets/attendance_item.dart';
+import 'package:myapp/presentation/widgets/attendances_backdate.dart';
+import 'package:myapp/presentation/widgets/attendances_searchbar.dart';
 
 class AttendancesPage extends StatefulWidget {
   @override
@@ -114,12 +116,23 @@ class _AttendancesPageState extends State<AttendancesPage> {
               children: [
                 IconButton(
                   icon: Icon(Icons.calendar_today, color: Color(0xFF33499e)),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => AttendancesBackdate()),
-                    );
+                                    onPressed: () async {
+                      // Navigasi ke halaman AttendancesBackdate dan tunggu hasilnya
+                      DateTime? selectedDate = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AttendancesBackdate(),
+                        ),
+                      //   ).then((_) {
+                      //   // Ketika kembali dari halaman AttendancesBackdate, fetch ulang data attendances
+                      //   context.read<AttendancesBloc>().add(FetchAttendance(date: DateTime.now()));
+                      // }
+                      );
+                      
+                    if (selectedDate != null) {
+                      // Lakukan sesuatu dengan tanggal yang dipilih, misalnya memuat ulang data kehadiran berdasarkan tanggal
+                      context.read<AttendancesBloc>().add(FetchAttendanceByDate(date: selectedDate));
+                    }
                   },
                 ),
                 SizedBox(width: 6),
@@ -213,276 +226,4 @@ List<Attendance> _filterAttendances(List<Attendance> attendances, String filter)
 
   print("Total attendances after filter: ${filtered.length}");
   return filtered;
-}
-
-
-class AttendanceItem extends StatelessWidget {
-  final Attendance attendance;
-
-  AttendanceItem({required this.attendance});
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<AttendancesBloc, AttendancesState>(
-      builder: (context, state) {
-        return Card(
-          margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-          child: ListTile(
-            title: Row(  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [ Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    attendance.name,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
-                  ),
-                  SizedBox(height: 4), // Jarak kecil antara nama dan posisi
-                  Text(attendance.position),
-                ],
-              ),
-
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  if (attendance.checkIn != null)
-                    Text(
-                      "Checked In: ${_formatDateTime(attendance.checkIn!)}",
-                      style: TextStyle(fontSize: 12,  fontWeight: FontWeight.bold, backgroundColor: Colors.white),
-                    ),
-                  if (attendance.checkOut != null)
-                    Text(
-                      "Checked Out: ${_formatDateTime(attendance.checkOut!)}",
-                      style: TextStyle(fontSize: 12,  fontWeight: FontWeight.bold, backgroundColor: Colors.white),
-                    ),
-                ],
-              ),
-
-
-            ],),
-
-            trailing: GestureDetector(
-              onTap: () {
-                  if (attendance.checkIn == null || (attendance.checkOut != null && attendance.checkIn!.isBefore(attendance.checkOut!))) {
-                    _showCheckInConfirmation(context);
-                  } else {
-                    _showCheckOutConfirmation(context);
-                  }
-                },
-
-              child: Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: _getIconColor(),
-                ),
-                padding: EdgeInsets.all(8),
-                child: Icon(
-                  _getIcon(),
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
- IconData _getIcon() {
-  if (attendance.checkIn == null) {
-    return Icons.circle_outlined;
-  } else if (attendance.checkOut == null || (attendance.checkOut != null && attendance.checkIn!.isAfter(attendance.checkOut!))) {
-    return Icons.access_time;
-  } else {
-    return Icons.check_circle_outline;
-  }
-}
-
-
-  Color _getIconColor() {
-  if (attendance.checkIn == null) {
-    return Colors.red;
-  } else if (attendance.checkOut == null || (attendance.checkOut != null && attendance.checkIn!.isAfter(attendance.checkOut!))) {
-    return Colors.blue;
-  } else {
-    return Colors.green;
-  }
-}
-
-
-  String _formatDateTime(DateTime dateTime) {
-    return "${dateTime.hour}:${dateTime.minute}:${dateTime.second}";
-  }
-
-  void _showCheckInConfirmation(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Colors.white,
-          title: Text('Check-In Confirmation'),
-          content: Text('Are you sure you want to check in?'),
-          actions: [
-            TextButton(
-              child: Text('Cancel'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: Text('Confirm'),
-              onPressed: () {
-                context.read<AttendancesBloc>().add(UpdateAttendanceStatus(attendance.name, isCheckIn: true));
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _showCheckOutConfirmation(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Colors.white,
-          title: Text('Check-Out Confirmation'),
-          content: Text('Are you sure you want to check out?'),
-          actions: [
-            TextButton(
-              child: Text('Cancel'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: Text('Confirm'),
-              onPressed: () {
-                context.read<AttendancesBloc>().add(UpdateAttendanceStatus(attendance.name, isCheckIn: false));
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _showCheckInAgainConfirmation(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Colors.white,
-          title: Text('Check-In Again Confirmation'),
-          content: Text('Are you sure you want to check in again?'),
-          actions: [
-            TextButton(
-              child: Text('Cancel'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: Text('Confirm'),
-              onPressed: () {
-                context.read<AttendancesBloc>().add(UpdateAttendanceStatus(attendance.name, isCheckIn: true));
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-}
-
-
-class AttendanceSearchDelegate extends SearchDelegate {
-  @override
-  List<Widget> buildActions(BuildContext context) {
-    return [
-      IconButton(
-        icon: Icon(Icons.clear),
-        onPressed: () {
-          query = ''; // Menghapus input query
-        },
-      ),
-    ];
-  }
-
-  @override
-  Widget buildLeading(BuildContext context) {
-    return IconButton(
-      icon: Icon(Icons.arrow_back),
-      onPressed: () {
-        close(context, null); // Menutup search bar
-      },
-    );
-  }
-
-  @override
-  Widget buildResults(BuildContext context) {
-    return BlocBuilder<AttendancesBloc, AttendancesState>(
-      builder: (context, state) {
-        if (state is AttendanceLoaded) {
-          final results = state.attendances
-              .where((attendance) =>
-                  attendance.name.toLowerCase().contains(query.toLowerCase()) ||
-                  attendance.position
-                      .toLowerCase()
-                      .contains(query.toLowerCase()))
-              .toList();
-
-          return ListView.builder(
-            itemCount: results.length,
-            itemBuilder: (context, index) {
-              final attendance = results[index];
-              return AttendanceItem(attendance: attendance);
-            },
-          );
-        } else {
-          return Center(child: CircularProgressIndicator());
-        }
-      },
-    );
-  }
-
-  @override
-  Widget buildSuggestions(BuildContext context) {
-    return BlocBuilder<AttendancesBloc, AttendancesState>(
-      builder: (context, state) {
-        if (state is AttendanceLoaded) {
-          final suggestions = state.attendances
-              .where((attendance) =>
-                  attendance.name.toLowerCase().contains(query.toLowerCase()) ||
-                  attendance.position
-                      .toLowerCase()
-                      .contains(query.toLowerCase()))
-              .toList();
-
-          return ListView.builder(
-            itemCount: suggestions.length,
-            itemBuilder: (context, index) {
-              final attendance = suggestions[index];
-              return ListTile(
-                title: Text(attendance.name),
-                subtitle: Text(attendance.position),
-                onTap: () {
-                  query = attendance.name; // Set query saat item di-tap
-                  showResults(context); // Tampilkan hasil
-                },
-              );
-            },
-          );
-        } else {
-          return Center(child: CircularProgressIndicator());
-        }
-      },
-    );
-  }
 }

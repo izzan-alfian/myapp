@@ -1,12 +1,14 @@
 import 'package:myapp/data/models/attendances_model.dart';
+import 'package:myapp/domain/entities/attendances/attendances_entities.dart';
+import 'package:myapp/domain/repositories/attendances/attendances_repository.dart';
 
-class AttendancesRepository {
+class AttendancesRepositoryImpl implements AttendancesRepository {
   Future<List<Attendance>> getAttendancesByDate(DateTime date) async {
     // Contoh: Ambil data dari database atau API
     // Misal ambil dari data dummy untuk sekarang
     List<Attendance> allAttendances = [
-        Attendance(name: "Alexander Graham", position: "Manpower"),
-        Attendance(name: "John Doe", position: "Supervisor"),
+        Attendance(name: "Alexander Graham", position: "Manpower", checkIn: DateTime.now()),
+        Attendance(name: "John Doe", position: "Supervisor",checkIn: DateTime.now()),
         Attendance(name: "Jane Smith", position: "Project Manager"),
         Attendance(name: "John Wick", position: "Manpower"),
 
@@ -90,5 +92,11 @@ class AttendancesRepository {
              attendance.checkIn?.month == date.month &&
              attendance.checkIn?.year == date.year;
     }).toList();
+  }
+
+  @override
+  Future<List<AttendancesEntities>> fetchAttendances(DateTime date) {
+    // TODO: implement fetchAttendances
+    throw UnimplementedError();
   }
 }

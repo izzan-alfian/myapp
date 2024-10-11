@@ -1,19 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:myapp/presentation/blocs/daily_report/daily_report_bloc.dart';
-import 'package:myapp/presentation/blocs/daily_report/daily_report_event.dart';
-import 'package:myapp/presentation/blocs/daily_report/daily_report_state.dart';
-import 'package:myapp/data/repositories/planner_consultant_repository_impl.dart';
-import 'package:myapp/data/repositories/project_repository_impl.dart';
-import 'package:myapp/data/repositories/service_provider_repository_impl.dart';
-import 'package:myapp/data/repositories/supervisor_consultant_repository_impl.dart';
-import 'package:myapp/presentation/pages/daily_report/task_progress_step.dart';
-
-import './project_select_step.dart';
 import './task_progress_step.dart';
+import './project_select_step.dart';
 import './weather_step.dart';
 
 class DailyReportPage extends StatefulWidget {
@@ -27,8 +16,6 @@ class _DailyReportPageState extends State<DailyReportPage> {
   String? dropdownValue = "Ash";
   int _step = 0;
   final TextEditingController dateInput = TextEditingController();
-  final TextEditingController _smpkNo = TextEditingController(text: null);
-  final TextEditingController _kontrakNo = TextEditingController(text: null);
 
   @override
   void initState() {

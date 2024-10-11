@@ -5,6 +5,6 @@ class PlannerConsultantRepositoryImpl implements PlannerConsultantRepository {
   @override
   Future<List<String>> fetchPlannerConsultants() async {
     await Future.delayed(Duration(seconds: 1));
-    return ['Provider One', 'Provider Two', 'Provider Three'];
+    return ['Planner One', 'Planner Two', 'Planner Three'];
   }
 }

@@ -6,6 +6,6 @@ class SupervisorConsultantRepositoryImpl implements SupervisorConsultantReposito
   @override
   Future<List<String>> fetchSupervisorConsultants() async {
     await Future.delayed(Duration(seconds: 1));
-    return ['Provider One', 'Provider Two', 'Provider Three'];
+    return ['Supervisor One', 'Supervisor Two', 'Supervisor Three'];
   }
 }

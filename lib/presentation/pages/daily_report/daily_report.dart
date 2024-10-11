@@ -10,6 +10,9 @@ import 'package:myapp/data/repositories/planner_consultant_repository_impl.dart'
 import 'package:myapp/data/repositories/project_repository_impl.dart';
 import 'package:myapp/data/repositories/service_provider_repository_impl.dart';
 import 'package:myapp/data/repositories/supervisor_consultant_repository_impl.dart';
+import 'package:myapp/presentation/pages/daily_report/task_progress_step.dart';
+
+import './project_select_step.dart';
 
 class DailyReportPage extends StatefulWidget {
   const DailyReportPage({Key? key}) : super(key: key);
@@ -89,226 +92,14 @@ class _DailyReportPageState extends State<DailyReportPage> {
           },
           steps: <Step>[
             Step(
-                title:
-                    _step == 0 ? const Text('Select project') : const Text(''),
+                title: _step == 0 ? const Text('Project select') : const Text(''),
                 isActive: true,
-                content: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      TextField(
-                        controller: dateInput,
-                        decoration: InputDecoration(
-                          filled: true, // Enable fill color
-                          fillColor: Colors.white, // Background color
-                          labelText: "Report date",
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          suffixIcon: IconButton(
-                            icon: Icon(Icons.calendar_today),
-                            onPressed: () async {
-                              DateTime? pickedDate = await showDatePicker(
-                                context: context,
-                                initialDate: DateTime.now(),
-                                firstDate: DateTime(1950),
-                                lastDate: DateTime(2100),
-                              );
-
-                              if (pickedDate != null) {
-                                String formattedDate =
-                                    DateFormat('yyyy-mm-dd').format(pickedDate);
-                                setState(() {
-                                  dateInput.text =
-                                      formattedDate; // Set the formatted date in the TextField
-                                });
-                              }
-                            },
-                          ),
-                        ),
-                      ),
-
-                      SizedBox(height: 20),
-
-                      DropdownButtonFormField<String>(
-                        value: null,
-                        decoration: InputDecoration(
-                          labelText: 'Project name',
-                          filled: true,
-                          fillColor: Colors.white, // Background color
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                        ),
-                        items: <String>['Ash', 'Bash', 'Cash', 'Dash']
-                            .map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
-                        onChanged: (String? newValue) {
-                          setState(() {
-                            dropdownValue = newValue!;
-                          });
-                        },
-                      ),
-
-                      SizedBox(height: 20),
-
-                      DropdownButtonFormField<String>(
-                        value: null,
-                        decoration: InputDecoration(
-                          labelText: 'Service Provider',
-                          enabled: true,
-                          filled: true,
-                          fillColor: Colors.white,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                        ),
-                        items: <String>['Ash', 'Bash', 'Cash', 'Dash']
-                            .map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
-                        onChanged: (String? newValue) {
-                          setState(() {
-                            dropdownValue = newValue!;
-                          });
-                        },
-                      ),
-
-                      SizedBox(height: 20),
-
-                      DropdownButtonFormField<String>(
-                        value: null,
-                        decoration: InputDecoration(
-                          labelText: 'Supervisor Consultant',
-                          enabled: true,
-                          filled: true,
-                          fillColor: Colors.white,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                        ),
-                        items: <String>['Ash', 'Bash', 'Cash', 'Dash']
-                            .map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
-                        onChanged: (String? newValue) {
-                          setState(() {
-                            dropdownValue = newValue!;
-                          });
-                        },
-                      ),
-
-                      SizedBox(height: 10.0),
-
-                      DropdownButtonFormField<String>(
-                        value: null,
-                        decoration: InputDecoration(
-                          labelText: 'Planner Consultant',
-                          enabled: true,
-                          filled: true,
-                          fillColor: Colors.white, // Background color
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                        ),
-                        items: <String>['Ash', 'Bash', 'Cash', 'Dash']
-                            .map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
-                        onChanged: (String? newValue) {
-                          setState(() {
-                            dropdownValue = newValue!;
-                          });
-                        },
-                      ),
-
-                      SizedBox(height: 20.0),
-
-                      TextField(
-                        controller: _kontrakNo,
-                        enabled: false,
-                        decoration: InputDecoration(
-                          labelText: "Kontrak No. Tanggal",
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                        ),
-                      ),
-
-                      SizedBox(height: 10.0),
-
-                      TextField(
-                        controller: _smpkNo,
-                        enabled: false,
-                        decoration: InputDecoration(
-                          labelText: "SMPK No. Tanggal",
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                        ),
-                      ),
-
-                      SizedBox(height: 10.0),
-
-                      // IntrinsicHeight(
-                      //   child: TextField(
-                      //     maxLines:
-                      //         null, // Allows unlimited lines and makes the TextField scrollable as needed
-                      //     minLines: 1, // Adjust this to set the initial height
-                      //     decoration: InputDecoration(
-                      //       labelText: "Project",
-                      //       hintText: 'Enter your notes here...',
-                      //       fillColor: Colors.white, // Background color
-                      //       filled: true, // Enable fill color
-                      //       border: OutlineInputBorder(),
-                      //     ),
-                      //   ),
-                      // ),
-                    ])),
+                content: ProjectSelectStep()
+                ),
             Step(
               title: _step == 1 ? const Text('Task progress') : const Text(''),
               isActive: _step >= 1,
-              content: BlocProvider(
-                create: (context) => DailyReportBloc(
-                  projectRepository: ProjectRepositoryImpl(),
-                  serviceProviderRepository: ServiceProviderRepositoryImpl(),
-                  supervisorConsultantRepository: SupervisorConsultantRepositoryImpl(),
-                  plannerConsultantRepository: PlannerConsultantRepositoryImpl(),
-                )..add(FetchDailyReportData()),
-                child: BlocBuilder<DailyReportBloc, DailyReportState>(
-                  builder: (context, state) {
-                    if (state is DailyReportLoading) {
-                      return Center(child: CircularProgressIndicator());
-                    } else if (state is DailyReportLoaded) {
-                      return Column(
-                        children: [
-                          _buildListSection("Projects", state.projects),
-                          _buildListSection("Service Providers", state.serviceProviders),
-                          _buildListSection("Supervisor Consultants", state.supervisorConsultants),
-                          _buildListSection("Planner Consultants", state.plannerConsultants),
-                        ],
-                      );
-                    } else if (state is DailyReportError) {
-                      return Center(child: Text(state.message));
-                    } else {
-                      return Container();
-                    }
-                  },
-                ),
-              ),
+              content: TaskProgressStep(),
             ),
             Step(
               title: _step == 2 ? const Text('Weather') : const Text(''),

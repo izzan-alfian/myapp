@@ -13,6 +13,8 @@ import 'package:myapp/data/repositories/supervisor_consultant_repository_impl.da
 import 'package:myapp/presentation/pages/daily_report/task_progress_step.dart';
 
 import './project_select_step.dart';
+import './task_progress_step.dart';
+import './weather_step.dart';
 
 class DailyReportPage extends StatefulWidget {
   const DailyReportPage({Key? key}) : super(key: key);
@@ -104,56 +106,9 @@ class _DailyReportPageState extends State<DailyReportPage> {
             Step(
               title: _step == 2 ? const Text('Weather') : const Text(''),
               isActive: _step >= 2,
-              content: Column(
-                children: [
-                  Container(
-                    width: double.infinity,
-                    height: 100,
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10.0),
-                        border: Border.all(
-                          color: Colors.black,
-                          width: 1.0,
-                        )),
-                  ),
-                  SizedBox(height: 20),
-                  IntrinsicHeight(
-                    child: TextField(
-                      maxLines: null, // Makes the TextField scrollable
-                      minLines: 1,
-                      decoration: InputDecoration(
-                        labelText: "Optional notes",
-                        fillColor: Colors.white, // Background color
-                        filled: true, // Enable fill color
-                        // Optional: Define what the border looks like when the TextField is focused
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                          // Optional: Define what the border looks like when the TextField is not editable
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+              content: WeatherStep(),
             ),
           ],
         ));
-  }
-
-  Widget _buildListSection(String title, List<String> items) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(
-            title,
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-        ),
-        ...items.map((item) => ListTile(title: Text(item))).toList(),
-      ],
-    );
   }
 }

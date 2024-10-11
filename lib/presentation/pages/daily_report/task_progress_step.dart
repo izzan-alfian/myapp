@@ -19,16 +19,6 @@ class TaskProgressStep extends StatefulWidget {
 }
 
 class _TaskProgressStepState extends State<TaskProgressStep> {
-  String? dropdownValue = "";
-  final TextEditingController dateInput = TextEditingController();
-  final TextEditingController _smpkNo = TextEditingController(text: null);
-  final TextEditingController _kontrakNo = TextEditingController(text: null);
-
-  @override
-  void initState() {
-    dateInput.text = DateFormat('yyyy-MM-dd').format(DateTime.now());
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {

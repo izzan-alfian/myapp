@@ -94,6 +94,23 @@ class AttendancesRepositoryImpl implements AttendancesRepository {
     }).toList();
   }
 
+
+  // @override
+  // Future<List<AttendancesEntities>> fetchAttendances(DateTime date) async {
+  //   // Simulate fetching data by filtering the dummy data based on the date
+  //   List<AttendancesEntities> filteredAttendances = _dummyAttendances.where((attendance) {
+  //     return attendance.checkIn != null &&
+  //         attendance.checkIn!.year == date.year &&
+  //         attendance.checkIn!.month == date.month &&
+  //         attendance.checkIn!.day == date.day;
+  //   }).toList();
+
+  //   // Return the filtered dummy data
+  //   return Future.delayed(
+  //     Duration(seconds: 1), // Simulate network delay
+  //     () => filteredAttendances,
+  //   );
+
   @override
   Future<List<AttendancesEntities>> fetchAttendances(DateTime date) {
     // TODO: implement fetchAttendances

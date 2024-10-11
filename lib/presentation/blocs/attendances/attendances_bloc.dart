@@ -16,17 +16,18 @@ class AttendancesBloc extends Bloc<AttendancesEvent, AttendancesState> {
     on<UpdateAttendanceStatus>(_onUpdateAttendanceStatus);
   }
 
-  Future<void> _onFetchAttendance(FetchAttendance event, Emitter<AttendancesState> emit) async {
-    emit(AttendanceLoading()); // Tampilkan loading saat proses berlangsung
-    try {
-      // Ambil data dari repository
-      final attendances = await attendanceRepository.getAttendances();
-      allAttendances = attendances; // Simpan semua attendances
-      emit(AttendanceLoaded(attendances)); // Emit state data yang sudah dimuat
-    } catch (error) {
-      emit(AttendanceError("Failed to load attendance data")); // Emit error jika gagal
-    }
+ Future<void> _onFetchAttendance(FetchAttendance event, Emitter<AttendancesState> emit) async {
+  emit(AttendanceLoading()); // Tampilkan loading saat proses berlangsung
+  try {
+    // Ambil data dari repository
+    final attendances = await attendanceRepository.fetchAttendances(DateTime(date)); // Pastikan nama metode sama
+    allAttendances = attendances; // Simpan semua attendances
+    emit(AttendanceLoaded(attendances)); // Emit state data yang sudah dimuat
+  } catch (error) {
+    emit(AttendanceError("Failed to load attendance data")); // Emit error jika gagal
   }
+}
+
 
   Future<void> _onFetchAttendanceByDate(FetchAttendanceByDate event, Emitter<AttendancesState> emit) async {
     emit(AttendanceLoading()); // Tampilkan loading saat proses berlangsung

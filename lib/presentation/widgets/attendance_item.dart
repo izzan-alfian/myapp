@@ -4,13 +4,14 @@ import 'package:myapp/data/models/attendances_model.dart';
 import 'package:myapp/presentation/blocs/attendances/attendances_bloc.dart';
 import 'package:myapp/presentation/blocs/attendances/attendances_event.dart';
 import 'package:myapp/presentation/blocs/attendances/attendances_state.dart';
+import 'package:myapp/presentation/widgets/attendances_leaves.dart';
 
 class AttendanceItem extends StatelessWidget {
   final Attendance attendance;
 
   const AttendanceItem({super.key, required this.attendance});
 
-  @override
+   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AttendancesBloc, AttendancesState>(
       builder: (context, state) {
@@ -51,26 +52,47 @@ class AttendanceItem extends StatelessWidget {
                 ),
               ],
             ),
-            trailing: GestureDetector(
-              onTap: () {
-                if (attendance.checkIn == null ||
-                    (attendance.checkOut != null && attendance.checkIn!.isBefore(attendance.checkOut!))) {
-                  _showCheckInConfirmation(context);
-                } else {
-                  _showCheckOutConfirmation(context);
-                }
-              },
-              child: Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: _getIconColor(),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min, // Memastikan elemen di dalam row tidak mengambil ruang lebih
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    if (attendance.checkIn == null ||
+                        (attendance.checkOut != null && attendance.checkIn!.isBefore(attendance.checkOut!))) {
+                      _showCheckInConfirmation(context);
+                    } else {
+                      _showCheckOutConfirmation(context);
+                    }
+                  },
+
+                  child: Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: _getIconColor(),
+                    ),
+                    padding: EdgeInsets.all(8),
+                    child: Icon(
+                      _getIcon(),
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
-                padding: EdgeInsets.all(8),
-                child: Icon(
-                  _getIcon(),
-                  color: Colors.white,
+              
+                PopupMenuButton<String>(
+                  icon: Icon(Icons.more_vert),
+                  onSelected: (String value) {
+                    if (value == 'leaves') {
+                      _navigateToLeavesForm(context);
+                    }
+                  },
+                  itemBuilder: (BuildContext context) => [
+                    PopupMenuItem<String>(
+                      value: 'leaves',
+                      child: Text('Leaves'),
+                    ),
+                  ],
                 ),
-              ),
+              ],
             ),
           ),
         );
@@ -159,4 +181,13 @@ class AttendanceItem extends StatelessWidget {
       },
     );
   }
+}
+
+
+void _navigateToLeavesForm(BuildContext context) {
+  // Navigasi ke halaman form leaves
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => AttendancesLeaves()),
+  );
 }

@@ -7,7 +7,7 @@ import 'package:myapp/presentation/blocs/attendances/attendances_bloc.dart';
 import 'package:myapp/presentation/blocs/attendances/attendances_state.dart';
 import 'package:myapp/presentation/blocs/attendances/attendances_event.dart';
 import 'package:myapp/presentation/widgets/attendance_item.dart';
-import 'package:myapp/presentation/widgets/attendances_backdate.dart';
+import 'package:myapp/presentation/widgets/attendances_leaves.dart';
 import 'package:myapp/presentation/widgets/attendances_searchbar.dart';
 
 class AttendancesPage extends StatefulWidget {
@@ -114,27 +114,6 @@ class _AttendancesPageState extends State<AttendancesPage> {
             padding: const EdgeInsets.all(10.0),
             child: Row(
               children: [
-                // IconButton(
-                //   icon: Icon(Icons.calendar_today, color: Color(0xFF33499e)),
-                //                     onPressed: () async {
-                //       // Navigasi ke halaman AttendancesBackdate dan tunggu hasilnya
-                //       DateTime? selectedDate = await Navigator.push(
-                //         context,
-                //         MaterialPageRoute(
-                //           builder: (context) => AttendancesBackdate(),
-                //         ),
-                //       //   ).then((_) {
-                //       //   // Ketika kembali dari halaman AttendancesBackdate, fetch ulang data attendances
-                //       //   context.read<AttendancesBloc>().add(FetchAttendance(date: DateTime.now()));
-                //       // }
-                //       );
-                      
-                //     if (selectedDate != null) {
-                //       // Lakukan sesuatu dengan tanggal yang dipilih, misalnya memuat ulang data kehadiran berdasarkan tanggal
-                //       context.read<AttendancesBloc>().add(FetchAttendanceByDate(date: selectedDate));
-                //     }
-                //   },
-                // ),
                 SizedBox(width: 6),
                  Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -208,22 +187,37 @@ void _filterAndReloadAttendances() {
 List<Attendance> _filterAttendances(List<Attendance> attendances, String filter) {
   print("Applying filter: $filter");
   print("Total attendances before filter: ${attendances.length}");
-  
+
   final filtered = attendances.where((attendance) {
     final isCheckedIn = attendance.checkIn != null;
     final isCheckedOut = attendance.checkOut != null;
 
     if (filter == 'Non-checked') {
-      return !isCheckedIn && !isCheckedOut;
+      return !isCheckedIn;
     } else if (filter == 'Checked in') {
-      return isCheckedIn && !isCheckedOut;
+      // Cek apakah pengguna sudah check-in setelah check-out
+      if (isCheckedIn && (!isCheckedOut || attendance.checkIn!.isAfter(attendance.checkOut!))) {
+        return true;
+      }
+      return false;
     } else if (filter == 'Checked out') {
-      return isCheckedIn && isCheckedOut;
+      // Jika check-in lebih awal dari check-out
+      return isCheckedIn && isCheckedOut && attendance.checkIn!.isBefore(attendance.checkOut!);
     } else {
-      return true; // Show all
+      return true; // Tampilkan semua
     }
   }).toList();
 
   print("Total attendances after filter: ${filtered.length}");
   return filtered;
 }
+
+// void _navigateToLeavesForm(BuildContext context) {
+//   // Navigasi ke halaman form leaves dengan mengoper attendance
+//   Navigator.push(
+//     context,
+//     MaterialPageRoute(
+//       builder: (context) => AttendancesLeaves(attendance: attendance), // Mengoper attendance
+//     ),
+//   );
+// }

@@ -8,16 +8,14 @@ import 'package:myapp/presentation/blocs/attendances/attendances_state.dart';
 class AttendanceItem extends StatelessWidget {
   final Attendance attendance;
 
-  // AttendanceItem({required this.attendance});
-
-  const AttendanceItem({Key? key, required this.attendance}) : super(key: key);
+  const AttendanceItem({super.key, required this.attendance});
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AttendancesBloc, AttendancesState>(
       builder: (context, state) {
         return Card(
-          margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+          margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
           child: ListTile(
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -27,12 +25,12 @@ class AttendanceItem extends StatelessWidget {
                   children: [
                     Text(
                       attendance.name,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
                       ),
                     ),
-                    SizedBox(height: 4), // Jarak kecil antara nama dan posisi
+                    const SizedBox(height: 4), // Jarak kecil antara nama dan posisi
                     Text(attendance.position),
                   ],
                 ),
@@ -42,12 +40,12 @@ class AttendanceItem extends StatelessWidget {
                     if (attendance.checkIn != null)
                       Text(
                         "Checked In: ${_formatDateTime(attendance.checkIn!)}",
-                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, backgroundColor: Colors.white),
+                        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, backgroundColor: Colors.white),
                       ),
                     if (attendance.checkOut != null)
                       Text(
                         "Checked Out: ${_formatDateTime(attendance.checkOut!)}",
-                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, backgroundColor: Colors.white),
+                        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, backgroundColor: Colors.white),
                       ),
                   ],
                 ),

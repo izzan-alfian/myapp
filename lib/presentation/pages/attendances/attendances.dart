@@ -114,27 +114,27 @@ class _AttendancesPageState extends State<AttendancesPage> {
             padding: const EdgeInsets.all(10.0),
             child: Row(
               children: [
-                IconButton(
-                  icon: Icon(Icons.calendar_today, color: Color(0xFF33499e)),
-                                    onPressed: () async {
-                      // Navigasi ke halaman AttendancesBackdate dan tunggu hasilnya
-                      DateTime? selectedDate = await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => AttendancesBackdate(),
-                        ),
-                      //   ).then((_) {
-                      //   // Ketika kembali dari halaman AttendancesBackdate, fetch ulang data attendances
-                      //   context.read<AttendancesBloc>().add(FetchAttendance(date: DateTime.now()));
-                      // }
-                      );
+                // IconButton(
+                //   icon: Icon(Icons.calendar_today, color: Color(0xFF33499e)),
+                //                     onPressed: () async {
+                //       // Navigasi ke halaman AttendancesBackdate dan tunggu hasilnya
+                //       DateTime? selectedDate = await Navigator.push(
+                //         context,
+                //         MaterialPageRoute(
+                //           builder: (context) => AttendancesBackdate(),
+                //         ),
+                //       //   ).then((_) {
+                //       //   // Ketika kembali dari halaman AttendancesBackdate, fetch ulang data attendances
+                //       //   context.read<AttendancesBloc>().add(FetchAttendance(date: DateTime.now()));
+                //       // }
+                //       );
                       
-                    if (selectedDate != null) {
-                      // Lakukan sesuatu dengan tanggal yang dipilih, misalnya memuat ulang data kehadiran berdasarkan tanggal
-                      context.read<AttendancesBloc>().add(FetchAttendanceByDate(date: selectedDate));
-                    }
-                  },
-                ),
+                //     if (selectedDate != null) {
+                //       // Lakukan sesuatu dengan tanggal yang dipilih, misalnya memuat ulang data kehadiran berdasarkan tanggal
+                //       context.read<AttendancesBloc>().add(FetchAttendanceByDate(date: selectedDate));
+                //     }
+                //   },
+                // ),
                 SizedBox(width: 6),
                  Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

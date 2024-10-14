@@ -20,6 +20,7 @@ class _TaskProgressStepState extends State<TaskProgressStep> {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
     return Column(children: [
 
       Container(
@@ -84,6 +85,50 @@ class _TaskProgressStepState extends State<TaskProgressStep> {
         ),
       ),
       SizedBox(height: 20.0,),
+
+
+
+      SizedBox(height: 40.0,),
+
+      Stack(
+        children: [
+          Container(
+            height: 70.0,
+            width: screenWidth,
+            decoration: BoxDecoration(
+              color: Color(0xFF06d6a0),
+              border: Border.all(color: Color(0xFF06d6a0), width: 2.0),
+              borderRadius: BorderRadius.circular(15.0)
+            ),
+          ),
+          Positioned(
+            right: 0,
+            child: Container(
+              height: 70.0,
+              width: screenWidth - 52.0,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(color: Color(0xFF06d6a0), width: 2.0),
+                borderRadius: BorderRadius.circular(15.0)
+              ),
+              child: Padding(
+                padding: EdgeInsets.all(10.0),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(child: Text("• Hello"),), Text("Overdue •", style: TextStyle(color: Colors.redAccent, fontWeight: FontWeight.w600),)
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+
+      SizedBox(height: 40.0,),
 
       
       DataTable(

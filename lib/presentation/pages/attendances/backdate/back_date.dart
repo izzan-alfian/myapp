@@ -34,32 +34,34 @@ CalendarFormat _calendarFormat = CalendarFormat.month;
               selectedDayPredicate: (day) {
                 return isSameDay(_selectedDay, day);
               },
-                            onDaySelected: (selectedDay, focusedDay) async {
-                if (isSameDay(selectedDay, DateTime.now())) {
-                  // Jika hari ini, langsung gunakan tanggal tanpa memilih waktu
-                  setState(() {
-                    _selectedDay = selectedDay;
-                    _focusedDay = focusedDay;
-                  });
-                 (selectedTime) {
+                              onDaySelected: (selectedDay, focusedDay) async {
+                  if (isSameDay(selectedDay, DateTime.now())) {
+                    // Jika hari ini, langsung gunakan tanggal tanpa memilih waktu
                     setState(() {
-                      _selectedDay = DateTime(
-                        selectedDay.year,
-                        selectedDay.month,
-                        selectedDay.day,
-                        selectedTime.hour,
-                        selectedTime.minute,
-                      );
+                      _selectedDay = selectedDay;
                       _focusedDay = focusedDay;
                     });
+                  } else {
+                    // Jika hari lain, tampilkan time picker
+                    final selectedTime = await _selectTime(context);
+                    if (selectedTime != null) {
+                      setState(() {
+                        _selectedDay = DateTime(
+                          selectedDay.year,
+                          selectedDay.month,
+                          selectedDay.day,
+                          selectedTime.hour,
+                          selectedTime.minute,
+                        );
+                        _focusedDay = focusedDay;
+                      });
+                    }
+                  }
 
-                    // Kirimkan tanggal yang dipilih kembali ke halaman sebelumnya
-                    print("Selected Date and Time: $_selectedDay"); // Debugging log
-                    // context.read<AttendancesBloc>().add(FetchAttendanceByDate(date: _selectedDay!));
-                  };
-                }
+                  // Kirimkan tanggal yang dipilih kembali ke halaman sebelumnya
                   Navigator.pop(context, _selectedDay);
-              },
+                },
+
               onFormatChanged: (format) {
                 setState(() {
                   _calendarFormat = format;
@@ -88,3 +90,39 @@ CalendarFormat _calendarFormat = CalendarFormat.month;
     );
   }
 }
+
+ Future<TimeOfDay?> _selectTime(BuildContext context) async {
+    final TimeOfDay? selectedTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+    return selectedTime;
+  }
+
+  // void _showYearPicker(BuildContext context) {
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         title: Text("Select Year"),
+  //         content: Container(
+  //           width: 300,
+  //           height: 300,
+  //           child: YearPicker(
+  //             firstDate: DateTime(DateTime.now().year - 100, 1),
+  //             lastDate: DateTime(DateTime.now().year + 100, 1),
+  //             initialDate: DateTime.now(),
+  //             selectedDate: _focusedDay,
+  //             onChanged: (DateTime dateTime) {
+  //               setState(() {
+  //                 _focusedDay = DateTime(dateTime.year, _focusedDay.month, _focusedDay.day);
+  //               });
+  //               Navigator.pop(context, _selectedDay);
+  //             },
+  //           ),
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
+

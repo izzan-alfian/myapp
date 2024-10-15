@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/presentation/pages/attendances/attendances.dart';
 import 'package:myapp/presentation/pages/daily_report/daily_report.dart';
+import 'package:myapp/presentation/pages/report_logistics/report_logistics.dart';
 
 class LayoutNavbar extends StatefulWidget {
   @override
@@ -16,7 +17,7 @@ class _LayoutNavbarState extends State<LayoutNavbar> {
     AttendancesPage(),
     ProjectTaskPage(),
     DailyReportPage(),
-    LogisticsPage(),
+    ReportLogistics(),
   ];
 
   void _onItemTapped(int index) {
@@ -93,15 +94,4 @@ class ProjectTaskPage extends StatelessWidget {
   }
 }
 
-class LogisticsPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color(0xFFf0f0f0),
-      appBar: AppBar(
-        backgroundColor:Color(0xFF33499e),
-        title: Text('Logistics Report', style: TextStyle(color: Colors.white)),
-      ),
-    );
-  }
-}
+

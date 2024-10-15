@@ -1,45 +1,57 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart' as intl;
 
 class TaskProgressStep extends StatefulWidget {
-  const TaskProgressStep({Key? key}) : super(key: key);
+  const TaskProgressStep({super.key});
 
   @override
   _TaskProgressStepState createState() => _TaskProgressStepState();
 }
 
 class _TaskProgressStepState extends State<TaskProgressStep> {
-  int _currentSliderValue = 75;
   TextEditingController sliderController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
+    return const Column(children: [
 
-      ListBuilder(),
+      ExpansionPanelListExample(),
 
-      SizedBox(height: 40.0),
-
-      ExpansionPanelListExample()
+      SizedBox(height: 20.0),
 
     ],);
   }
 }
 
 class ListBuilder extends StatefulWidget {
+  final String projectName;
+  final int progress;
+  final DateTime startDate;
+  final DateTime endTime;
+  final bool isOverdue;
+  int sliderValue;
+
+  ListBuilder({
+    super.key,
+    required this.projectName,
+    required this.progress,
+    required this.startDate,
+    required this.endTime,
+    required this.isOverdue,
+  }) : sliderValue = progress;
 
   @override
   _ListBuilderState createState() => _ListBuilderState();
 }
 
 class _ListBuilderState extends State<ListBuilder> {
-  final int initValue = 50;
   int _currentSliderValue = 0; //temporarily set to 0 because flutter require the top variable to be initialized, but this variable's value will definitely determined in initState()
   TextEditingController sliderController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _currentSliderValue = initValue;
+    _currentSliderValue = widget.progress;
   }
 
   @override
@@ -51,8 +63,8 @@ class _ListBuilderState extends State<ListBuilder> {
         height: 105,
         width: screenWidth,
         decoration: BoxDecoration(
-          color: getActiveColor(_currentSliderValue),
-          border: Border.all(color: getActiveColor(_currentSliderValue), width: 2.0),
+          color: getActiveColor(widget.progress, _currentSliderValue),
+          border: Border.all(color: getActiveColor(widget.progress, _currentSliderValue), width: 2.0),
           borderRadius: BorderRadius.circular(15.0)
         ),
       ),
@@ -63,23 +75,27 @@ class _ListBuilderState extends State<ListBuilder> {
           width: screenWidth - 52.0,
           decoration: BoxDecoration(
             color: Colors.white,
-            border: Border.all(color: getActiveColor(_currentSliderValue), width: 2.0),
+            border: Border.all(color: getActiveColor(widget.progress, _currentSliderValue), width: 2.0),
             borderRadius: BorderRadius.circular(15.0)
           ),
           child: Column(
             children: [
               Padding(
-                padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                padding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
                 child: Column(
                   children: [
-
                     Row(
                       children: [
-                        Expanded(child: Text("• 自転車を準備する",   style: TextStyle(color: Color(0xFF363537),  fontSize: 18.0)),),
-                                        Text("Overdue •", style: TextStyle(color: Colors.redAccent,             fontSize: 18.0, fontWeight: FontWeight.w600),)
+                        Expanded(
+                          child:
+                            Text("• ${widget.projectName}",
+                              style: const TextStyle(color: Color(0xFF363537), fontSize: 18.0)),),
+                            widget.isOverdue ?
+                              const Text("Overdue •",
+                                style:TextStyle(color: Colors.redAccent, fontSize: 18.0, fontWeight: FontWeight.w600),) :
+                              const Text("")
                       ],
                     ),
-
                     Row(
                       children: [
                         Expanded(
@@ -89,22 +105,23 @@ class _ListBuilderState extends State<ListBuilder> {
                               child: SliderTheme(
                                 data: SliderThemeData(
                                   trackShape: CustomTrackShape(),
-                                  thumbShape: CustomSliderThumbShape(),
-                                  overlayShape: CustomSliderOverlayShape(),
+                                  thumbShape: const CustomSliderThumbShape(),
+                                  overlayShape: const CustomSliderOverlayShape(),
                                 ),
                                 child: Slider(
                                   value: _currentSliderValue.toDouble(),
                                   max: 100,
                                   min: 0,
-                                  activeColor: getActiveColor(_currentSliderValue),
+                                  activeColor: getActiveColor(widget.progress, _currentSliderValue),
                                   inactiveColor: Colors.grey,
-                                  thumbColor: getActiveColor(_currentSliderValue),
+                                  thumbColor: getActiveColor(widget.progress, _currentSliderValue),
                                   label: _currentSliderValue.round().toString(),
                                   onChanged: (double value) {
                                     setState(() {
-                                      if (value > initValue) {
+                                      if (value > widget.progress) {
                                         _currentSliderValue = value.toInt();
                                         sliderController.text = _currentSliderValue.toString();
+                                        widget.sliderValue = value.toInt();
                                       }
                                     });
                                   },
@@ -113,7 +130,7 @@ class _ListBuilderState extends State<ListBuilder> {
                             )
                         ),
 
-                        SizedBox(width: 10.0,height: 30.0,),
+                        const SizedBox(width: 10.0,height: 30.0,),
                         
                         SizedBox(
                           width: 33,
@@ -129,8 +146,8 @@ class _ListBuilderState extends State<ListBuilder> {
                               setState(() {
                                 int? value = int.tryParse(text);
                                 if (value != null) {
-                                  if (value < initValue) {
-                                    _currentSliderValue = initValue;
+                                  if (value < widget.progress) {
+                                    _currentSliderValue = widget.progress;
                                   } else if (value > 100) {
                                     _currentSliderValue = 100;
                                   } else {
@@ -144,16 +161,19 @@ class _ListBuilderState extends State<ListBuilder> {
                           ),
                         ),
 
-                        Text("%"),
+                        const Text("%"),
 
                       ],
                     ),
 
-                    Row(
-                      children: [
-                        Expanded(child: Text("10 Sep 2024 - 12 Oct 2024", style: TextStyle(color: Colors.grey, fontSize: 10.0),),),
-                                        Text("View More",                 style: TextStyle(color: Colors.blueAccent, fontWeight: FontWeight.w600),),
-                                        Icon(Icons.keyboard_arrow_down, color: Colors.blueAccent)
+                    Row( children: [
+                        Expanded(child: Row(children: [
+                          Text(intl.DateFormat('dd MMM yyyy').format(widget.startDate), style: const TextStyle(color: Colors.grey, fontSize: 10.0),),
+                    const Text(" - "                                                  , style: TextStyle(color: Colors.grey, fontSize: 10.0),),
+                          Text(intl.DateFormat('dd MMM yyyy').format(widget.startDate), style: const TextStyle(color: Colors.grey, fontSize: 10.0),)
+                        ],)),
+                      const Text("View More", style: TextStyle(color: Colors.blueAccent),),
+                      const Icon(Icons.keyboard_arrow_down, color: Colors.blueAccent)
                       ],
                     ),
                   ],
@@ -176,15 +196,27 @@ class Item {
   });
 
   String headerValue;
-  Widget expandedValue;
+  List<ListBuilder> expandedValue;
   bool isExpanded;
 }
 
-List<Item> generateItems(int numberOfItems) {
-  return List<Item>.generate(numberOfItems, (int index) {
+List<Item> generateItems(int numberOfCategory) {
+  return List<Item>.generate(numberOfCategory, (int categoryIndex) {
     return Item(
-      headerValue: 'Panel $index',
-      expandedValue: ListBuilder(),
+      headerValue: 'Panel $categoryIndex',
+      expandedValue: generateTasks(2),
+    );
+  });
+}
+
+List<ListBuilder> generateTasks(int numberOfTask) {
+  return List<ListBuilder>.generate(numberOfTask, (int categoryIndex) {
+    return ListBuilder(
+      projectName: "自転車を準備する",
+      progress: 50,
+      startDate: DateTime.now(),
+      endTime: DateTime.now(),
+      isOverdue: true,
     );
   });
 }
@@ -211,7 +243,8 @@ class _ExpansionPanelListExampleState extends State<ExpansionPanelListExample> {
 
   Widget _buildPanel() {
     return ExpansionPanelList(
-      elevation: 0, // Removes shadow from each list
+      dividerColor: const Color(0xFFf0f0f0),
+      elevation: 0, // Removes shadow from list
       expansionCallback: (int index, bool isExpanded) {
         setState(() {
           _data[index].isExpanded = isExpanded;
@@ -219,18 +252,24 @@ class _ExpansionPanelListExampleState extends State<ExpansionPanelListExample> {
       },
       children: _data.map<ExpansionPanel>((Item item) {
         return ExpansionPanel(
-          backgroundColor: item.isExpanded ? Color(0x00) : Colors.white,
+          backgroundColor: item.isExpanded ? const Color(0x00000000) : Colors.white,
           canTapOnHeader: true,
           headerBuilder: (BuildContext context, bool isExpanded) {
+            bool isSliderModified = item.expandedValue.any((listBuilder) {
+              print("${listBuilder.progress} != ${listBuilder.sliderValue}");
+              return listBuilder.progress != listBuilder.sliderValue;
+            });
             return ListTile(
               title: Row(
                 children: [
                   Text("${item.headerValue}  "),
-                  Icon(Icons.circle, size: 7.0, color: Color(0xFFffd166))
+                  isSliderModified ? const Icon(Icons.circle, size: 7.0, color: Color(0xFFffd166)) : Text("")
                   ],),
             );
           },
-          body: item.expandedValue,
+          body: Column(
+            children: item.expandedValue,
+          ),
           isExpanded: item.isExpanded,
         );
       }).toList(),
@@ -239,11 +278,11 @@ class _ExpansionPanelListExampleState extends State<ExpansionPanelListExample> {
 }
 
 
-Color getActiveColor(int currentSliderValue) {
-  if (currentSliderValue <= 50) {
-    return Color(0xFFb6bdc4);
+Color getActiveColor(int initProgress, int currentSliderValue) {
+  if (currentSliderValue <= initProgress) {
+    return const Color(0xFFb6bdc4);
   } else {
-    return Color(0xFFffd166);
+    return const Color(0xFFffd166);
   }
 }
 

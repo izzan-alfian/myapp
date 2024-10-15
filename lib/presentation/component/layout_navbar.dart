@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:myapp/presentation/pages/attendances/attendances.dart';
 import 'package:myapp/presentation/pages/daily_report/daily_report.dart';
 import 'package:myapp/presentation/pages/report_logistics/report_logistics.dart';
+import 'package:myapp/presentation/pages/project_and_task/project_and_task.dart';
 
 class LayoutNavbar extends StatefulWidget {
   @override
@@ -11,11 +12,13 @@ class LayoutNavbar extends StatefulWidget {
 class _LayoutNavbarState extends State<LayoutNavbar> {
   int _selectedIndex = 0;
 
+  
+
   // List halaman yang akan ditampilkan
   static List<Widget> _pages = <Widget>[
     DashboardPage(),
     AttendancesPage(),
-    ProjectTaskPage(),
+    ProjectAndTaskPage(),
     DailyReportPage(),
     ReportLogistics(),
   ];
@@ -81,17 +84,5 @@ class DashboardPage extends StatelessWidget {
   }
 }
 
-class ProjectTaskPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color(0xFFf0f0f0),
-      appBar: AppBar(
-        backgroundColor: Color(0xFF33499e),
-        title: Text('Project & Task', style: TextStyle(color: Colors.white)),
-      ),
-    );
-  }
-}
 
 

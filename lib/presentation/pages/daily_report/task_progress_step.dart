@@ -1,14 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:myapp/presentation/blocs/daily_report/daily_report_bloc.dart';
-import 'package:myapp/presentation/blocs/daily_report/daily_report_event.dart';
-import 'package:myapp/presentation/blocs/daily_report/daily_report_state.dart';
-import 'package:myapp/data/repositories/planner_consultant_repository_impl.dart';
-import 'package:myapp/data/repositories/project_repository_impl.dart';
-import 'package:myapp/data/repositories/service_provider_repository_impl.dart';
-import 'package:myapp/data/repositories/supervisor_consultant_repository_impl.dart';
-
 class TaskProgressStep extends StatefulWidget {
   const TaskProgressStep({Key? key}) : super(key: key);
 
@@ -22,307 +13,159 @@ class _TaskProgressStepState extends State<TaskProgressStep> {
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
     return Column(children: [
 
-      // Container(
-      //   decoration: BoxDecoration(
-      //     border: Border.all(width: 1), borderRadius: BorderRadius.all(Radius.circular(10)),
-      //   ),
-      //   child: Table(
-      //   border: TableBorder.symmetric(
-      //     inside: BorderSide(width: 1),
-      //   ),
-      //   columnWidths: const <int, TableColumnWidth>{
-      //     0: IntrinsicColumnWidth(),
-      //     1: FlexColumnWidth(),
-      //     2: FixedColumnWidth(64),
-      //   },
-      //   defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-      //   children: <TableRow>[
-      //     TableRow(
-      //       children: <Widget>[
-      //         Container(
-      //           height: 32,
-      //           color: Colors.green,
-      //         ),
-      //         TableCell(
-      //           verticalAlignment: TableCellVerticalAlignment.top,
-      //           child: Container(
-      //             height: 32,
-      //             width: 32,
-      //             color: Colors.red,
-      //           ),
-      //         ),
-      //         Container(
-      //           height: 64,
-      //           color: Colors.blue,
-      //         ),
-      //       ],
-      //     ),
-      //     TableRow(
-      //       decoration: const BoxDecoration(
-      //         color: Colors.grey,
-      //       ),
-      //       children: <Widget>[
-      //         Container(
-      //           height: 64,
-      //           width: 128,
-      //           color: Colors.purple,
-      //         ),
-      //         Container(
-      //           height: 32,
-      //           color: Colors.yellow,
-      //         ),
-      //         Center(
-      //           child: Container(
-      //             height: 32,
-      //             width: 32,
-      //             color: Colors.orange,
-      //           ),
-      //         ),
-      //       ],
-      //     ),
-      //   ],
-      //   ),
-      // ),
-
-      // SizedBox(height: 20.0,),
-
-      Stack(
-        children: [
-          Container(
-            height: 105,
-            width: screenWidth,
-            decoration: BoxDecoration(
-              color: getActiveColor(_currentSliderValue),
-              border: Border.all(color: getActiveColor(_currentSliderValue), width: 2.0),
-              borderRadius: BorderRadius.circular(15.0)
-            ),
-          ),
-          Positioned(
-            right: 0,
-            child: Container(
-              height: 105,
-              width: screenWidth - 52.0,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.all(color: getActiveColor(_currentSliderValue), width: 2.0),
-                borderRadius: BorderRadius.circular(15.0)
-              ),
-              child: Column(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-                    child: Column(
-                      children: [
-
-                        Row(
-                          children: [
-                            Expanded(child: Text("• 自転車を準備する",   style: TextStyle(color: Color(0xFF363537),  fontSize: 18.0)),),
-                                            Text("Overdue •", style: TextStyle(color: Colors.redAccent,             fontSize: 18.0, fontWeight: FontWeight.w600),)
-                          ],
-                        ),
-
-                        Row(
-                          children: [
-                            Expanded(
-                              child:
-                                SizedBox(
-                                  height: 20,
-                                  child: SliderTheme(
-                                    data: SliderThemeData(
-                                      trackShape: CustomTrackShape(),
-                                      thumbShape: CustomSliderThumbShape(),
-                                      overlayShape: CustomSliderOverlayShape(),
-                                    ),
-                                    child: Slider(
-                                      value: _currentSliderValue.toDouble(),
-                                      max: 100,
-                                      min: 0,
-                                      activeColor: getActiveColor(_currentSliderValue),
-                                      inactiveColor: Colors.grey,
-                                      thumbColor: getActiveColor(_currentSliderValue),
-                                      label: _currentSliderValue.round().toString(),
-                                      onChanged: (double value) {
-                                        setState(() {
-                                          if (value > 50) {
-                                            _currentSliderValue = value.toInt();
-                                            sliderController.text = _currentSliderValue.toString();
-                                          }
-                                        });
-                                      },
-                                    ),
-                                  ),
-                                )
-                            ),
-
-                            SizedBox(width: 10.0,height: 30.0,),
-                            
-                            SizedBox(
-                              width: 33,
-                              height: 20,
-                              child: TextField(
-                                keyboardType: TextInputType.number,
-                                controller: sliderController,
-                                decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                  hintText: _currentSliderValue.toString(),
-                                ),
-                                onSubmitted: (text) {
-                                  setState(() {
-                                    int? value = int.tryParse(text);
-                                    if (value != null) {
-                                      if (value < 50) {
-                                        _currentSliderValue = 50;
-                                      } else if (value > 100) {
-                                        _currentSliderValue = 100;
-                                      } else {
-                                        _currentSliderValue = value;
-                                      }
-                                      sliderController.text = _currentSliderValue.toString(); // Sync text field with slider value
-                                      sliderController.selection = TextSelection.fromPosition(TextPosition(offset: sliderController.text.length)); // Move cursor to end
-                                    }
-                                  });
-                                },
-                              ),
-                            ),
-
-                            Text("%"),
-
-                          ],
-                        ),
-
-                        Row(
-                          children: [
-                            Expanded(child: Text("10 Sep 2024 - 12 Oct 2024", style: TextStyle(color: Colors.grey,        fontSize: 10.0),),),
-                                            Text("View More",                             style: TextStyle(color: Colors.blueAccent,   fontWeight: FontWeight.w600),),
-                            Icon(Icons.keyboard_arrow_down, color: Colors.blueAccent)
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              )
-            ),
-          ),
-        ],
-      ),
+      ListBuilder(),
 
       SizedBox(height: 40.0),
 
-
       ExpansionPanelListExample()
-
-      
-      // DataTable(
-      //   border: const TableBorder(verticalInside: BorderSide(color: Colors.grey, width: 0.5),),
-      //   headingRowHeight: 35.0, 
-      //   columnSpacing: 20.0,
-      //   clipBehavior: Clip.hardEdge,
-      //   decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), border: Border.all(width: 1.0, color: Colors.grey), color: Colors.white),
-      //   columns: const <DataColumn>[
-      //     DataColumn(
-      //       label: Expanded(
-      //         child: Text(
-      //           'Task',
-      //           style: TextStyle(fontStyle: FontStyle.italic, color: Colors.grey),
-      //         ),
-      //       ),
-      //     ),
-      //     DataColumn(
-      //       numeric: true,
-      //       label: Expanded(
-      //         child: Text(
-      //           'Planned w.',
-      //           style: TextStyle(fontStyle: FontStyle.italic, color: Colors.grey),
-      //         ),
-      //       ),
-      //     ),
-      //     DataColumn(
-      //       numeric: true,
-      //       label: Expanded(
-      //         child: Text(
-      //           'Prog. (%)',
-      //           style: TextStyle(fontStyle: FontStyle.italic, color: Colors.grey),
-      //         ),
-      //       ),
-      //     ),
-      //   ],
-      //   rows: const <DataRow>[
-      //     DataRow(
-      //       cells: <DataCell>[
-      //         DataCell(Text("asd")),
-      //         DataCell(Text('0.018')),
-      //         DataCell(Text('23%'), showEditIcon: true),
-      //       ],
-      //     ),
-      //     DataRow(
-      //       cells: <DataCell>[
-      //         DataCell(Text('Task 2')),
-      //         DataCell(Text('0.195')),
-      //         DataCell(Text('55%'), showEditIcon: true),
-      //       ],
-      //     ),
-      //     DataRow(
-      //       cells: <DataCell>[
-      //         DataCell(Text('Task 3')),
-      //         DataCell(Text('0.247')),
-      //         DataCell(Text('78%'), showEditIcon: true),
-      //       ],  
-      //     ),
-      //   ],
-      // ),
-
-      
-      // BlocProvider(
-      //   create: (context) => DailyReportBloc(
-      //     projectRepository: ProjectRepositoryImpl(),
-      //     serviceProviderRepository: ServiceProviderRepositoryImpl(),
-      //     supervisorConsultantRepository: SupervisorConsultantRepositoryImpl(),
-      //     plannerConsultantRepository: PlannerConsultantRepositoryImpl(),
-      //   )..add(FetchDailyReportData()),
-      //   child: BlocBuilder<DailyReportBloc, DailyReportState>(
-      //     builder: (context, state) {
-      //       if (state is DailyReportLoading) {
-      //         return Center(child: CircularProgressIndicator());
-      //       } else if (state is DailyReportLoaded) {
-      //         return Column(
-      //           children: [
-      //             _buildListSection("Projects", state.projects),
-      //             _buildListSection("Service Providers", state.serviceProviders),
-      //             _buildListSection("Supervisor Consultants", state.supervisorConsultants),
-      //             _buildListSection("Planner Consultants", state.plannerConsultants),
-      //           ],
-      //         );
-      //       } else if (state is DailyReportError) {
-      //         return Center(child: Text(state.message));
-      //       } else {
-      //         return Container();
-      //       }
-      //     },
-      //   ),
-      // ),
 
     ],);
   }
+}
 
-  // Widget _buildListSection(String title, List<String> items) {
-  //   return Column(
-  //     crossAxisAlignment: CrossAxisAlignment.start,
-  //     children: [
-  //       Padding(
-  //         padding: const EdgeInsets.all(8.0),
-  //         child: Text(
-  //           title,
-  //           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-  //         ),
-  //       ),
-  //       ...items.map((item) => ListTile(title: Text(item))).toList(),
-  //     ],
-  //   );
-  // }
+class ListBuilder extends StatefulWidget {
+
+  @override
+  _ListBuilderState createState() => _ListBuilderState();
+}
+
+class _ListBuilderState extends State<ListBuilder> {
+  final int initValue = 50;
+  int _currentSliderValue = 0; //temporarily set to 0 because flutter require the top variable to be initialized, but this variable's value will definitely determined in initState()
+  TextEditingController sliderController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _currentSliderValue = initValue;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    return Stack(
+    children: [
+      Container(
+        height: 105,
+        width: screenWidth,
+        decoration: BoxDecoration(
+          color: getActiveColor(_currentSliderValue),
+          border: Border.all(color: getActiveColor(_currentSliderValue), width: 2.0),
+          borderRadius: BorderRadius.circular(15.0)
+        ),
+      ),
+      Positioned(
+        right: 0,
+        child: Container(
+          height: 105,
+          width: screenWidth - 52.0,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            border: Border.all(color: getActiveColor(_currentSliderValue), width: 2.0),
+            borderRadius: BorderRadius.circular(15.0)
+          ),
+          child: Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                child: Column(
+                  children: [
+
+                    Row(
+                      children: [
+                        Expanded(child: Text("• 自転車を準備する",   style: TextStyle(color: Color(0xFF363537),  fontSize: 18.0)),),
+                                        Text("Overdue •", style: TextStyle(color: Colors.redAccent,             fontSize: 18.0, fontWeight: FontWeight.w600),)
+                      ],
+                    ),
+
+                    Row(
+                      children: [
+                        Expanded(
+                          child:
+                            SizedBox(
+                              height: 20,
+                              child: SliderTheme(
+                                data: SliderThemeData(
+                                  trackShape: CustomTrackShape(),
+                                  thumbShape: CustomSliderThumbShape(),
+                                  overlayShape: CustomSliderOverlayShape(),
+                                ),
+                                child: Slider(
+                                  value: _currentSliderValue.toDouble(),
+                                  max: 100,
+                                  min: 0,
+                                  activeColor: getActiveColor(_currentSliderValue),
+                                  inactiveColor: Colors.grey,
+                                  thumbColor: getActiveColor(_currentSliderValue),
+                                  label: _currentSliderValue.round().toString(),
+                                  onChanged: (double value) {
+                                    setState(() {
+                                      if (value > initValue) {
+                                        _currentSliderValue = value.toInt();
+                                        sliderController.text = _currentSliderValue.toString();
+                                      }
+                                    });
+                                  },
+                                ),
+                              ),
+                            )
+                        ),
+
+                        SizedBox(width: 10.0,height: 30.0,),
+                        
+                        SizedBox(
+                          width: 33,
+                          height: 20,
+                          child: TextField(
+                            keyboardType: TextInputType.number,
+                            controller: sliderController,
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              hintText: _currentSliderValue.toString(),
+                            ),
+                            onSubmitted: (text) {
+                              setState(() {
+                                int? value = int.tryParse(text);
+                                if (value != null) {
+                                  if (value < initValue) {
+                                    _currentSliderValue = initValue;
+                                  } else if (value > 100) {
+                                    _currentSliderValue = 100;
+                                  } else {
+                                    _currentSliderValue = value;
+                                  }
+                                  sliderController.text = _currentSliderValue.toString(); // Sync text field with slider value
+                                  sliderController.selection = TextSelection.fromPosition(TextPosition(offset: sliderController.text.length)); // Move cursor to end
+                                }
+                              });
+                            },
+                          ),
+                        ),
+
+                        Text("%"),
+
+                      ],
+                    ),
+
+                    Row(
+                      children: [
+                        Expanded(child: Text("10 Sep 2024 - 12 Oct 2024", style: TextStyle(color: Colors.grey, fontSize: 10.0),),),
+                                        Text("View More",                 style: TextStyle(color: Colors.blueAccent, fontWeight: FontWeight.w600),),
+                                        Icon(Icons.keyboard_arrow_down, color: Colors.blueAccent)
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          )
+        ),
+      ),
+    ],
+  );
+  }
 }
 
 class Item {
@@ -332,8 +175,8 @@ class Item {
     this.isExpanded = false,
   });
 
-  String expandedValue;
   String headerValue;
+  Widget expandedValue;
   bool isExpanded;
 }
 
@@ -341,7 +184,7 @@ List<Item> generateItems(int numberOfItems) {
   return List<Item>.generate(numberOfItems, (int index) {
     return Item(
       headerValue: 'Panel $index',
-      expandedValue: 'This is item number $index',
+      expandedValue: ListBuilder(),
     );
   });
 }
@@ -368,6 +211,7 @@ class _ExpansionPanelListExampleState extends State<ExpansionPanelListExample> {
 
   Widget _buildPanel() {
     return ExpansionPanelList(
+      elevation: 0, // Removes shadow from each list
       expansionCallback: (int index, bool isExpanded) {
         setState(() {
           _data[index].isExpanded = isExpanded;
@@ -375,21 +219,18 @@ class _ExpansionPanelListExampleState extends State<ExpansionPanelListExample> {
       },
       children: _data.map<ExpansionPanel>((Item item) {
         return ExpansionPanel(
+          backgroundColor: item.isExpanded ? Color(0x00) : Colors.white,
+          canTapOnHeader: true,
           headerBuilder: (BuildContext context, bool isExpanded) {
             return ListTile(
-              title: Text(item.headerValue),
+              title: Row(
+                children: [
+                  Text("${item.headerValue}  "),
+                  Icon(Icons.circle, size: 7.0, color: Color(0xFFffd166))
+                  ],),
             );
           },
-          body: ListTile(
-              title: Text(item.expandedValue),
-              subtitle:
-                  const Text('To delete this panel, tap the trash can icon'),
-              trailing: const Icon(Icons.delete),
-              onTap: () {
-                setState(() {
-                  _data.removeWhere((Item currentItem) => item == currentItem);
-                });
-              }),
+          body: item.expandedValue,
           isExpanded: item.isExpanded,
         );
       }).toList(),

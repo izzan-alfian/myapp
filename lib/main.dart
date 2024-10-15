@@ -19,13 +19,13 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         theme: ThemeData(
-             fontFamily: 'Poppins',
-        textTheme: TextTheme(
-          bodyLarge: TextStyle(fontSize: 16.0, fontWeight: FontWeight.normal),
-          bodyMedium: TextStyle(fontSize: 14.0, fontWeight: FontWeight.normal),
-          displayLarge: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+          fontFamily: 'Poppins',
+          textTheme: const TextTheme(
+            bodyLarge: TextStyle(fontSize: 16.0, fontWeight: FontWeight.normal),
+            bodyMedium: TextStyle(fontSize: 14.0, fontWeight: FontWeight.normal),
+            displayLarge: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
         ),
-          bottomNavigationBarTheme: BottomNavigationBarThemeData(
+          bottomNavigationBarTheme: const BottomNavigationBarThemeData(
             backgroundColor: Colors.white,
             selectedItemColor: Color(0xFF33499e),
             unselectedItemColor: Colors.grey,

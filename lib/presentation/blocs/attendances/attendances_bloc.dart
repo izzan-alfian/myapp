@@ -18,7 +18,7 @@ class AttendancesBloc extends Bloc<AttendancesEvent, AttendancesState> {
     try {
       // Dummy data attendances
       allAttendances = [
-        Attendance(name: "Alexander Graham", position: "Manpower"),
+        Attendance(name: "Alexander Graham Bellanio G", position: "Manpower"),
         Attendance(name: "John Doe", position: "Supervisor"),
         Attendance(name: "Jane Smith", position: "Project Manager"),
         Attendance(name: "John Wick", position: "Manpower"),

@@ -3,7 +3,7 @@ import 'package:myapp/domain/entities/attendances/attendances_entities.dart';
 import 'package:myapp/domain/repositories/attendances/attendances_repository.dart';
 
 class AttendancesRepositoryImpl implements AttendancesRepository {
-  Future<List<Attendance>> getAttendancesByDate(DateTime date) async {
+  Future<List<Attendance>> getAttendances(DateTime date) async {
     // Contoh: Ambil data dari database atau API
     // Misal ambil dari data dummy untuk sekarang
     List<Attendance> allAttendances = [

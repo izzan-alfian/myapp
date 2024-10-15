@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:myapp/data/models/attendances_model.dart';
-import 'package:myapp/presentation/blocs/attendances/attendances_bloc.dart';
-import 'package:myapp/presentation/blocs/attendances/attendances_event.dart';
-import 'package:myapp/presentation/blocs/attendances/attendances_state.dart';
-import 'package:myapp/presentation/widgets/attendances_leaves.dart';
+import 'package:myapp/data/models/back_date_model.dart';
+import 'package:myapp/presentation/blocs/backdate/backdate_bloc.dart';
+import 'package:myapp/presentation/blocs/backdate/backdate_event.dart';
+import 'package:myapp/presentation/blocs/backdate/backdate_state.dart';
 
-class AttendanceItem extends StatelessWidget {
-  final Attendance attendance;
 
-  const AttendanceItem({super.key, required this.attendance});
+class BackdateItem extends StatelessWidget {
+  final BackDate backdate;
+
+// Suggested code may be subject to a license. Learn more: ~LicenseLog:1728005632.
+  const BackdateItem({super.key, required this.backdate});
 
    @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AttendancesBloc, AttendancesState>(
+    return BlocBuilder<BackdateBloc, BackdateState>(
       builder: (context, state) {
         return Card(
           margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -28,7 +29,7 @@ class AttendanceItem extends StatelessWidget {
                     children: [
                       // Nama yang dipotong jika terlalu panjang
                       Text(
-                        attendance.name,
+                        backdate.name,
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
@@ -38,21 +39,21 @@ class AttendanceItem extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       // Posisi/role
-                      Text(attendance.position),
+                      Text(backdate.position),
                     ],
                   ),
                 ),
                Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    if (attendance.checkIn != null)
+                    if (backdate.checkIn != null)
                       Text(
-                        "In: ${_formatDateTime(attendance.checkIn!)}",
+                        "In: ${_formatDateTime(backdate.checkIn!)}",
                         style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
                       ),
-                    if (attendance.checkOut != null)
+                    if (backdate.checkOut != null)
                       Text(
-                        "Out: ${_formatDateTime(attendance.checkOut!)}",
+                        "Out: ${_formatDateTime(backdate.checkOut!)}",
                         style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
                       ),
                      
@@ -63,8 +64,8 @@ class AttendanceItem extends StatelessWidget {
                 const SizedBox(width: 12),
                 GestureDetector(
                   onTap: () {
-                    if (attendance.checkIn == null ||
-                        (attendance.checkOut != null && attendance.checkIn!.isBefore(attendance.checkOut!))) {
+                    if (backdate.checkIn == null ||
+                        (backdate.checkOut != null && backdate.checkIn!.isBefore(backdate.checkOut!))) {
                       _showCheckInConfirmation(context);
                     } else {
                       _showCheckOutConfirmation(context);
@@ -84,20 +85,20 @@ class AttendanceItem extends StatelessWidget {
                 ),
   
               
-                PopupMenuButton<String>(
-                  icon: Icon(Icons.more_vert),
-                  onSelected: (String value) {
-                    if (value == 'leaves') {
-                      _navigateToLeavesForm(context);
-                    }
-                  },
-                  itemBuilder: (BuildContext context) => [
-                    PopupMenuItem<String>(
-                      value: 'leaves',
-                      child: Text('Leaves'),
-                    ),
-                  ],
-                ),
+                // PopupMenuButton<String>(
+                //   icon: Icon(Icons.more_vert),
+                //   onSelected: (String value) {
+                //     if (value == 'leaves') {
+                //       _navigateToLeavesForm(context);
+                //     }
+                //   },
+                //   itemBuilder: (BuildContext context) => [
+                //     PopupMenuItem<String>(
+                //       value: 'leaves',
+                //       child: Text('Leaves'),
+                //     ),
+                //   ],
+                // ),
               ],
             ),
           ),
@@ -107,10 +108,10 @@ class AttendanceItem extends StatelessWidget {
   }
 
   IconData _getIcon() {
-    if (attendance.checkIn == null) {
+    if (backdate.checkIn == null) {
       return Icons.circle_outlined;
-    } else if (attendance.checkOut == null ||
-        (attendance.checkOut != null && attendance.checkIn!.isAfter(attendance.checkOut!))) {
+    } else if (backdate.checkOut == null ||
+        (backdate.checkOut != null && backdate.checkIn!.isAfter(backdate.checkOut!))) {
       return Icons.access_time;
     } else {
       return Icons.check_circle_outline;
@@ -118,10 +119,10 @@ class AttendanceItem extends StatelessWidget {
   }
 
   Color _getIconColor() {
-    if (attendance.checkIn == null) {
+    if (backdate.checkIn == null) {
       return Colors.red;
-    } else if (attendance.checkOut == null ||
-        (attendance.checkOut != null && attendance.checkIn!.isAfter(attendance.checkOut!))) {
+    } else if (backdate.checkOut == null ||
+        (backdate.checkOut != null && backdate.checkIn!.isAfter(backdate.checkOut!))) {
       return Colors.blue;
     } else {
       return Colors.green;
@@ -150,7 +151,7 @@ class AttendanceItem extends StatelessWidget {
             TextButton(
               child: Text('Confirm'),
               onPressed: () {
-                context.read<AttendancesBloc>().add(UpdateAttendanceStatus(attendance.name, isCheckIn: true));
+                context.read<BackdateBloc>().add(UpdateBackdateStatus(backdate.name, isCheckIn: true));
                 Navigator.of(context).pop();
               },
             ),
@@ -178,7 +179,7 @@ class AttendanceItem extends StatelessWidget {
             TextButton(
               child: Text('Confirm'),
               onPressed: () {
-                context.read<AttendancesBloc>().add(UpdateAttendanceStatus(attendance.name, isCheckIn: false));
+                context.read<BackdateBloc>().add(UpdateBackdateStatus(backdate.name, isCheckIn: false));
                 Navigator.of(context).pop();
               },
             ),
@@ -187,13 +188,4 @@ class AttendanceItem extends StatelessWidget {
       },
     );
   }
-}
-
-
-void _navigateToLeavesForm(BuildContext context) {
-  // Navigasi ke halaman form leaves
-  Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => AttendancesLeaves()),
-  );
 }

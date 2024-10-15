@@ -17,29 +17,25 @@ class UpdateAttendanceStatus extends AttendancesEvent {
   UpdateAttendanceStatus(this.name, {required this.isCheckIn});
 }
 
-class FetchAttendanceByDate extends AttendancesEvent {
-  final DateTime date;
 
-  FetchAttendanceByDate({required this.date});
-}
 
-class CheckInEvent extends AttendancesEvent {
-  final double latitude;
-  final double longitude;
+// class CheckInEvent extends AttendancesEvent {
+//   final double latitude;
+//   final double longitude;
 
-  CheckInEvent({required this.latitude, required this.longitude});
+//   CheckInEvent({required this.latitude, required this.longitude});
 
-  List<Object?> get props => [latitude, longitude];
-}
+//   List<Object?> get props => [latitude, longitude];
+// }
 
-class CheckOutEvent extends AttendancesEvent {
-  final double latitude;
-  final double longitude;
+// class CheckOutEvent extends AttendancesEvent {
+//   final double latitude;
+//   final double longitude;
 
-  CheckOutEvent({required this.latitude, required this.longitude});
+//   CheckOutEvent({required this.latitude, required this.longitude});
 
-  List<Object?> get props => [latitude, longitude];
-}
+//   List<Object?> get props => [latitude, longitude];
+// }
 
 
 

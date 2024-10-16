@@ -13,9 +13,17 @@ class _TaskProgressStepState extends State<TaskProgressStep> {
 
   @override
   Widget build(BuildContext context) {
-    return const Column(children: [
+    return Column(children: [
+      
 
-      ExpansionPanelListExample(),
+      Container(
+        decoration: BoxDecoration(border: Border.all(color: Color(0xFFb6bdc4)), borderRadius: BorderRadius.all(Radius.circular(20.0))),
+        child: ClipRRect(
+          borderRadius: BorderRadius.all(Radius.circular(20.0)),
+          child: ExpansionPanelListExample(),
+        ),
+          
+      ),
 
       SizedBox(height: 20.0),
 
@@ -249,26 +257,50 @@ class _ExpansionPanelListExampleState extends State<ExpansionPanelListExample> {
         setState(() {
           _data[index].isExpanded = isExpanded;
         });
-      },
+      },  
       children: _data.map<ExpansionPanel>((Item item) {
         return ExpansionPanel(
           backgroundColor: item.isExpanded ? const Color(0x00000000) : Colors.white,
           canTapOnHeader: true,
           headerBuilder: (BuildContext context, bool isExpanded) {
             bool isSliderModified = item.expandedValue.any((listBuilder) {
-              print("${listBuilder.progress} != ${listBuilder.sliderValue}");
               return listBuilder.progress != listBuilder.sliderValue;
             });
             return ListTile(
               title: Row(
                 children: [
+                  SizedBox(width: 10.0,),
+
+                  Container(
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Color((0xFFb6bdc4))),
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
+                      child: Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
+                        Text("${item.expandedValue.length} ", style: TextStyle(color: Color((0xFFb6bdc4))),),
+                        Text("tasks", style: TextStyle(color: Color((0xFFb6bdc4)), fontSize: 14.0),),
+                      ],)
+                      ),
+                  ),
+
+                  SizedBox(width: 10.0,),
+
                   Text("${item.headerValue}  "),
-                  isSliderModified ? const Icon(Icons.circle, size: 7.0, color: Color(0xFFffd166)) : Text("")
+
+                  if (isSliderModified) const Icon(Icons.circle, size: 7.0, color: Color(0xFFffd166)),
                   ],),
             );
           },
           body: Column(
-            children: item.expandedValue,
+            children: item.expandedValue.expand((listBuilder) {
+              return [
+                listBuilder,
+                const SizedBox(height: 20.0),
+              ];
+            }).toList()..removeLast(), // Remove the last SizedBox
           ),
           isExpanded: item.isExpanded,
         );

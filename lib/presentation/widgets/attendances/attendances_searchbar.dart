@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:myapp/presentation/blocs/attendances/attendances_bloc.dart';
 import 'package:myapp/presentation/blocs/attendances/attendances_state.dart';
-import 'package:myapp/presentation/widgets/attendance_item.dart';
+import 'package:myapp/presentation/widgets/attendances/attendance_item.dart';
 
 class AttendanceSearchDelegate extends SearchDelegate {
   @override

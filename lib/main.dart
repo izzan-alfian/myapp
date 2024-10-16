@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:myapp/presentation/blocs/attendances/attendances_bloc.dart';
 import 'package:myapp/presentation/blocs/attendances/attendances_event.dart';
+import 'package:myapp/presentation/blocs/backdate/backdate_bloc.dart';
+import 'package:myapp/presentation/blocs/backdate/backdate_event.dart';
 import 'package:myapp/presentation/component/layout_navbar.dart';
 
 void main() {
@@ -15,7 +17,11 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider<AttendancesBloc>(
           create: (context) => AttendancesBloc()..add(FetchAttendance(date: DateTime.now())),
-        )
+        ), 
+        BlocProvider<BackdateBloc>(
+          create: (context) => BackdateBloc()..add(FetchBackdate(date: DateTime.now())),
+        ),
+    
       ],
       child: MaterialApp(
         theme: ThemeData(

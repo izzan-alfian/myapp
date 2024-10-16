@@ -11,7 +11,6 @@ class BackDate {
     this.checkOut,
   });
 
-  // Tambahkan metode copyWith
   BackDate copyWith({
     String? name,
     String? position,

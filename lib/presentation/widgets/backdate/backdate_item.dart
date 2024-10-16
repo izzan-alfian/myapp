@@ -4,12 +4,12 @@ import 'package:myapp/data/models/back_date_model.dart';
 import 'package:myapp/presentation/blocs/backdate/backdate_bloc.dart';
 import 'package:myapp/presentation/blocs/backdate/backdate_event.dart';
 import 'package:myapp/presentation/blocs/backdate/backdate_state.dart';
+import 'package:myapp/presentation/widgets/backdate/backdate_leaves.dart';
 
 
 class BackdateItem extends StatelessWidget {
   final BackDate backdate;
-
-// Suggested code may be subject to a license. Learn more: ~LicenseLog:1728005632.
+  
   const BackdateItem({super.key, required this.backdate});
 
    @override
@@ -85,20 +85,20 @@ class BackdateItem extends StatelessWidget {
                 ),
   
               
-                // PopupMenuButton<String>(
-                //   icon: Icon(Icons.more_vert),
-                //   onSelected: (String value) {
-                //     if (value == 'leaves') {
-                //       _navigateToLeavesForm(context);
-                //     }
-                //   },
-                //   itemBuilder: (BuildContext context) => [
-                //     PopupMenuItem<String>(
-                //       value: 'leaves',
-                //       child: Text('Leaves'),
-                //     ),
-                //   ],
-                // ),
+                PopupMenuButton<String>(
+                  icon: Icon(Icons.more_vert),
+                  onSelected: (String value) {
+                    if (value == 'leaves') {
+                      _navigateToLeavesForm(context);
+                    }
+                  },
+                  itemBuilder: (BuildContext context) => [
+                    PopupMenuItem<String>(
+                      value: 'leaves',
+                      child: Text('Leaves'),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
@@ -188,4 +188,12 @@ class BackdateItem extends StatelessWidget {
       },
     );
   }
+}
+
+void _navigateToLeavesForm(BuildContext context) {
+  // Navigasi ke halaman form leaves
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => BackdateLeaves()),
+  );
 }

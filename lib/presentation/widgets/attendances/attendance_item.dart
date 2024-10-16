@@ -4,7 +4,7 @@ import 'package:myapp/data/models/attendances_model.dart';
 import 'package:myapp/presentation/blocs/attendances/attendances_bloc.dart';
 import 'package:myapp/presentation/blocs/attendances/attendances_event.dart';
 import 'package:myapp/presentation/blocs/attendances/attendances_state.dart';
-import 'package:myapp/presentation/widgets/attendances_leaves.dart';
+import 'package:myapp/presentation/widgets/attendances/attendances_leaves.dart';
 
 class AttendanceItem extends StatelessWidget {
   final Attendance attendance;

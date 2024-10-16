@@ -8,20 +8,14 @@ class BackdateBloc extends Bloc<BackdateEvent, BackdateState> {
 
   BackdateBloc() : super(BackDateLoading()) {
     on<FetchBackdate>(_onFetchBackdate);
-    // on<FilterBackdateEvent>(_onFilterBackdate);
-    // on<UpdateBackdateStatus>(_onUpdateBackdateStatus);
+    on<FilterBackdateEvent>(_onFilterBackdate);
+    on<UpdateBackdateStatus>(_onUpdateBackdateStatus);
   }
 
   void _onFetchBackdate(FetchBackdate event, Emitter<BackdateState> emit) {
     try {
-      // Dummy data attendances
       allBackDate = [
-        BackDate(name: "Dinda Juliana", position: "ABC"),
-        BackDate(
-            name: "John Doe",
-            position: "Supervisor",
-            checkIn: DateTime.now().subtract(Duration(days: 1)),
-            checkOut: DateTime.now().subtract(Duration(days: 1))),
+        BackDate(name: "Dinda Juliana", position: "Project Manager"),
         BackDate(name: "Jane Smith", position: "Project Manager"),
         BackDate(name: "John Wick", position: "Manpower"),
         BackDate(name: "Michael Johnson", position: "Manager"),
@@ -35,64 +29,56 @@ class BackdateBloc extends Bloc<BackdateEvent, BackdateState> {
       emit(BackdateError("Failed to fetch data"));
     }
   }
+
+  void _onFilterBackdate(FilterBackdateEvent event, Emitter<BackdateState> emit) {
+    if (state is BackdateLoaded) {
+      final loadedState = state as BackdateLoaded;
+      List<BackDate> filteredBackdate = loadedState.allBackDate;
+
+      // Debugging: Print semua backdate sebelum filter
+      print("All backdate: ");
+      for (var a in allBackDate) {
+        print("checkIn: ${a.checkIn}, checkOut: ${a.checkOut}");
+      }
+
+      if (event.filter == 'Non-checked') {
+      filteredBackdate = filteredBackdate.where((a) => a.checkIn == null).toList();
+    } else if (event.filter == 'Checked in') {
+      filteredBackdate = filteredBackdate.where((a) {
+        if (a.checkIn == null) return false; // Jika belum pernah check in
+        if (a.checkOut == null) return true; // Sudah check in tapi belum check out
+        
+        // Logika tambahan: Periksa apakah check-in terakhir adalah yang paling baru
+        return a.checkIn!.isAfter(a.checkOut!); // Tetap di "Checked in" jika check-in terbaru lebih lambat dari check-out terakhir
+      }).toList();
+    } else if (event.filter == 'Checked out') {
+      filteredBackdate = filteredBackdate.where((a) =>
+        a.checkOut != null &&
+        a.checkIn != null &&
+        a.checkIn!.isBefore(a.checkOut!) // Terfilter di "Checked out" jika check-in sebelum check-out
+      ).toList();
+    }
+
+      // Debugging: Print hasil filter
+      print("Filtered backdate: ");
+      for (var a in filteredBackdate) {
+        print("checkIn: ${a.checkIn}, checkOut: ${a.checkOut}");
+      }
+
+      emit(BackdateLoaded(filteredBackdate));
+    }
+  }
+
+  void _onUpdateBackdateStatus(UpdateBackdateStatus event, Emitter<BackdateState> emit) {
+    final index = allBackDate.indexWhere((a) => a.name == event.name);
+    if (index != -1) {
+      final backdate = allBackDate[index];
+      if (event.isCheckIn) {
+        allBackDate[index] = backdate.copyWith(checkIn: DateTime.now());
+      } else {
+        allBackDate[index] = backdate.copyWith(checkOut: DateTime.now());
+      }
+      emit(BackdateLoaded(List.from(allBackDate)));
+    }
+  }
 }
-
-// void _onFilterBackdate(FilterBackdateEvent event, Emitter<BackdateState> emit) {
-//   if (state is BackdateLoaded) {
-//     List<BackDate> filteredBackdate = allBackDate;
-
-//     // Debugging: Print semua attendances sebelum filter
-//     print("All backdate: ");
-//     for (var a in allBackDate) {
-//       print("checkIn: ${a.checkIn}, checkOut: ${a.checkOut}");
-//     }
-
-//     if (event.filter == 'Non-checked') {
-//       filteredBackdate =
-//           filteredBackdate.where((a) => a.checkIn == null).toList();
-//     } else if (event.filter == 'Checked in') {
-//       filteredBackdate = filteredBackdate.where((a) {
-//         if (a.checkIn == null) return false; // Jika belum pernah check in
-//         if (a.checkOut == null)
-//           return true; // Sudah check in tapi belum check out
-
-//         // Logika tambahan: Periksa apakah check-in terakhir adalah yang paling baru
-//         return a.checkIn!.isAfter(a
-//             .checkOut!); // Tetap di "Checked in" jika check-in terbaru lebih lambat dari check-out terakhir
-//       }).toList();
-//     } else if (event.filter == 'Checked out') {
-//       filteredBackdate = filteredBackdate
-//           .where((a) =>
-//                   a.checkOut != null &&
-//                   a.checkIn != null &&
-//                   a.checkIn!.isBefore(a
-//                       .checkOut!) // Terfilter di "Checked out" jika check-in sebelum check-out
-//               )
-//           .toList();
-//     }
-
-//     // Debugging: Print hasil filter
-//     print("Filtered attendances: ");
-//     for (var a in filteredBackdate) {
-//       print("checkIn: ${a.checkIn}, checkOut: ${a.checkOut}");
-//     }
-
-//     emit(BackdateLoaded(filteredBackdate));
-//   }
-// }
-
-// void _onUpdateBackdateStatus(
-//     UpdateBackdateStatus event, Emitter<BackdateState> emit) {
-//   final index = allBackDate.indexWhere((a) => a.name == event.name);
-//   if (index != -1) {
-//     final backdate = allBackDate[index];
-//     if (event.isCheckIn) {
-//       // Always update checkIn time for a new check-in
-//       allBackDate[index] = backdate.copyWith(checkIn: DateTime.now());
-//     } else {
-//       // Update checkOut time
-//       allBackDate[index] = backdate.copyWith(checkOut: DateTime.now());
-//     }
-//     emit(BackdateLoaded(List.from(allBackDate)));
-//   }
-// }

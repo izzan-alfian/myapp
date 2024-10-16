@@ -12,6 +12,7 @@ class BackdateLoaded extends BackdateState {
 
 class BackdateError extends BackdateState {
   final String message;
+  
   BackdateError(this.message);
 }
 

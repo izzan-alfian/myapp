@@ -7,9 +7,9 @@ import 'package:myapp/presentation/blocs/attendances/attendances_bloc.dart';
 import 'package:myapp/presentation/blocs/attendances/attendances_state.dart';
 import 'package:myapp/presentation/blocs/attendances/attendances_event.dart';
 import 'package:myapp/presentation/pages/backdate/back_date.dart';
-import 'package:myapp/presentation/widgets/attendance_item.dart';
-import 'package:myapp/presentation/widgets/attendances_leaves.dart';
-import 'package:myapp/presentation/widgets/attendances_searchbar.dart';
+import 'package:myapp/presentation/widgets/attendances/attendance_item.dart';
+import 'package:myapp/presentation/widgets/attendances/attendances_leaves.dart';
+import 'package:myapp/presentation/widgets/attendances/attendances_searchbar.dart';
 
 class AttendancesPage extends StatefulWidget {
   @override

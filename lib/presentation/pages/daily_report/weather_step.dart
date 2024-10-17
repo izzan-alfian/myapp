@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 
@@ -31,86 +33,81 @@ class _WeatherStepState extends State<WeatherStep> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SizedBox(height: 200,
-          child: ListView.builder(
-            controller: _scrollController,
-            scrollDirection: Axis.horizontal,
-            itemCount: weathers.length,
-            itemBuilder: (context, index) {
-              return Row(
-                children: [
-                  InkWell(
-                    onTap: () async {
-                      TimeOfDay? pickedTime = await showTimePicker(
-                        context: context,
-                        initialTime: TimeOfDay.now(),
-                      );
-                    },
-                    child: Container(
-                      width: 100,
-                      height: 200,
-                      margin: const EdgeInsets.only(top: 10.0, bottom: 10.0), // Made EdgeInsets const
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(100.0),
-                        border: Border.all(
-                          color: Colors.black,
-                          width: 1.0,
-                        ),
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Column(
+        SizedBox(height: 300,
+          child:
+            weathers.isEmpty ?
+              Center(
+                child: ElevatedButton(
+                  onPressed: _addContainer,
+                  child: Icon(Icons.add),
+                ),
+              )
+            :
+              ListView.builder(
+                controller: _scrollController,
+                scrollDirection: Axis.horizontal,
+                itemCount: weathers.length,
+                itemBuilder: (context, index) {
+                  return Row(
+                    children: [
+                      InkWell(
+                        onTap: () async {
+                          TimeOfDay? pickedTime = await showTimePicker(
+                            context: context,
+                            initialTime: TimeOfDay.now(),
+                          );
+                        },
+                        child: Container(
+                          width: 150,
+                          height: 300,
+                          margin: const EdgeInsets.only(top: 10.0, bottom: 10.0), // Made EdgeInsets const
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(100.0),
+                            border: Border.all(
+                              color: Colors.black,
+                              width: 1.0,
+                            ),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              Text(weathers[index].start.format(context)),
-                              Text(weathers[index].end.format(context)),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(weathers[index].start.format(context), style: TextStyle(color: Colors.grey)),
+                                  Text(" - ", style: TextStyle(color: Colors.grey)),
+                                  Text(weathers[index].end.format(context), style: TextStyle(color: Colors.grey)),
+                                ],
+                              ),
+                              Text("${weathers[index].weather}", style: TextStyle(fontSize: 25.0)),
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    weathers.removeAt(index); // Removes current item instead of last container
+                                  });
+                                },
+                                child: const Icon(Icons.delete),
+                              ),
                             ],
                           ),
-                          Text("${weathers[index].weather}"),
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                weathers.removeAt(index); // Removes current item instead of last container
-                              });
-                            },
-                            child: const Icon(Icons.remove),
-                          ),
-                        ],
+                        ),
                       ),
-                    ),
-                  ),
-                  if (index < weathers.length - 1) SizedBox(width: 10), // 20-pixel gap
-                ],
-              );
-            },
-          ),
-
-
-        ),
-
-        ElevatedButton(
-          onPressed: _addContainer,
-          child: Icon(Icons.add),
-        ),
-
-        SizedBox(height: 20),
-
-        // TextField
-        IntrinsicHeight(
-          child: TextField(
-            maxLines: null, // Makes the TextField scrollable
-            minLines: 1,
-            decoration: InputDecoration(
-              labelText: "Optional notes",
-              fillColor: Colors.white, // Background color
-              filled: true, // Enable fill color
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10.0),
+                      SizedBox(width: 10),
+                      if (index == weathers.length - 1)
+                        ElevatedButton(
+                          onPressed: _addContainer,
+                          child: Icon(Icons.add),
+                        ),
+                    ],
+                  );
+                },
               ),
-            ),
-          ),
+
+
         ),
+
+        SizedBox(height: 20.0,),
 
         // Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
         //   Transform.scale(
@@ -223,3 +220,4 @@ class WeatherDesc {
     this.end = const TimeOfDay(hour: 17, minute: 0),
   }) : start = start ?? TimeOfDay.now();
 }
+

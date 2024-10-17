@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import './task_progress_step.dart';
 import './project_select_step.dart';
 import './weather_step.dart';
+import './documentation_step.dart';
 
 class DailyReportPage extends StatefulWidget {
   const DailyReportPage({Key? key}) : super(key: key);
@@ -68,7 +69,7 @@ class _DailyReportPageState extends State<DailyReportPage> {
             }
           },
           onStepContinue: () {
-            if (_step <= 1) {
+            if (_step <= 2) {
               setState(() {
                 _step += 1;
               });
@@ -95,6 +96,11 @@ class _DailyReportPageState extends State<DailyReportPage> {
               isActive: _step >= 2,
               content: WeatherStep(),
             ),
+            Step(
+              title: _step == 3 ? const Text('Documentation') : const Text(''),
+              isActive: _step >= 3,
+              content: DocumentationStep(),
+            )
           ],
         ));
   }

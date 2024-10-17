@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:fl_chart/fl_chart.dart';
+
 import 'dart:ui';
+
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 
 class WeatherStep extends StatefulWidget {
   const WeatherStep({Key? key}) : super(key: key);
@@ -9,8 +14,10 @@ class WeatherStep extends StatefulWidget {
 }
 
 class _WeatherStepState extends State<WeatherStep> {
+  int touchIndex = -1;
   // List to hold the containers
   List<Container> containers = [];
+  List<WeatherDesc> weathers = [];
   final ScrollController _scrollController = ScrollController();
   int? selectedWeatherIndex;
 
@@ -24,20 +31,62 @@ class _WeatherStepState extends State<WeatherStep> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // Display all containers
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          controller: _scrollController, // Attach the controller
-          child: Row(
-            children: [
-              ..._buildContainerList(),
-              SizedBox(width: 10.0),
-              ElevatedButton(
-                onPressed: _addContainer,
-                child: Icon(Icons.add),
-              ),
-            ],
+        SizedBox(height: 200,
+          child: ListView.builder(
+            controller: _scrollController,
+            scrollDirection: Axis.horizontal,
+            itemCount: weathers.length,
+            itemBuilder: (context, index) {
+              return Row(
+                children: [
+                  InkWell(
+                    onTap: () async {
+                      TimeOfDay? pickedTime = await showTimePicker(
+                        context: context,
+                        initialTime: TimeOfDay.now(),
+                      );
+                    },
+                    child: Container(
+                      width: 100,
+                      height: 200,
+                      margin: const EdgeInsets.only(top: 10.0, bottom: 10.0), // Made EdgeInsets const
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(100.0),
+                        border: Border.all(
+                          color: Colors.black,
+                          width: 1.0,
+                        ),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Column(
+                            children: [
+                              Text(weathers[index].start.format(context)),
+                              Text(weathers[index].end.format(context)),
+                            ],
+                          ),
+                          Text("${weathers[index].weather}"),
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                weathers.removeAt(index); // Removes current item instead of last container
+                              });
+                            },
+                            child: const Icon(Icons.remove),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  if (index < weathers.length - 1) SizedBox(width: 10), // 20-pixel gap
+                ],
+              );
+            },
           ),
+
+
         ),
 
         ElevatedButton(
@@ -63,46 +112,80 @@ class _WeatherStepState extends State<WeatherStep> {
           ),
         ),
 
+        // Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+        //   Transform.scale(
+        //     scaleX: -1,
+        //     child: SizedBox(   
+        //       width: 150.0,
+        //       height: 150.0,
+        //         child: AspectRatio(
+        //         aspectRatio: 1,
+        //         child: PieChart(
+        //           PieChartData(
+        //             sectionsSpace: 0.0,
+        //             centerSpaceRadius: 0.0,
+        //             startDegreeOffset: -90.0,
+        //             borderData: FlBorderData(show: false),
+        //             sections: showingSections(),
+        //           ),
+        //         ),
+        //       ),
+        //     ),
+        //   ),
+        // SizedBox(   
+        //     width: 150.0,
+        //     height: 150.0,  
+        //       child: AspectRatio(
+        //       aspectRatio: 1,
+        //       child: PieChart(
+        //         PieChartData(
+        //           sections: showingSections(),
+        //           borderData: FlBorderData(show: false),
+        //           centerSpaceRadius: 0.0,
+        //         ),
+        //       ),
+        //     ),
+        //   ),
+        // ],)
+
       ],
     );
   }
 
+  // List<PieChartSectionData> showingSections() {
+  //   return List.generate(2, (i) {
+  //     final isTouched = i == 0; // Example: Highlighting the second section
+  //     final double fontSize = isTouched ? 25 : 16;
+  //     final double radius = isTouched ? 60 : 50;
+
+  //     switch (i) {
+  //       case 0:
+  //         return PieChartSectionData(
+  //           color: Colors.blue,
+  //           value: 240,
+  //           title: 'B%',
+  //           radius: radius,
+  //           titleStyle: TextStyle(fontSize: fontSize, color: Colors.white),
+  //         );
+  //       case 1:
+  //         return PieChartSectionData(
+  //           color: Colors.red,
+  //           value: 480,
+  //           title: 'R%',
+  //           radius: radius,
+  //           titleStyle: TextStyle(fontSize: fontSize, color: Colors.white),
+  //         );
+  //       default:
+  //         throw Error();
+  //     }
+  //   });
+  // }
+
   void _addContainer() {
     setState(() {
-      // Add a new container to the list
-      containers.add(
-        Container(
-          width: 100,
-          height: 200,
-          margin: EdgeInsets.only(top: 10), // Add some space between containers
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(100.0),
-            border: Border.all(
-              color: Colors.black,
-              width: 1.0,
-            ),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              const Text("9AM - 5PM"),
-              const Text("Weather"),
-              GestureDetector(
-                child: InkWell(
-                  onTap: () {},
-                  child: 
-                    const Icon(Icons.remove),
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
+      weathers.add(WeatherDesc());
+      _scrollToRight();
     });
-    
-    // Scroll to the right
-    _scrollToRight();
   }
 
   void _scrollToRight() {
@@ -127,4 +210,16 @@ class _WeatherStepState extends State<WeatherStep> {
     }
     return containerList;
   }
+}
+
+class WeatherDesc {
+  String weather;
+  TimeOfDay start;
+  TimeOfDay end;
+
+  WeatherDesc({
+    this.weather = "Sunny",
+    TimeOfDay? start,
+    this.end = const TimeOfDay(hour: 17, minute: 0),
+  }) : start = start ?? TimeOfDay.now();
 }

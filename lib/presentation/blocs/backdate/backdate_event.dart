@@ -13,8 +13,21 @@ class FilterBackdateEvent extends BackdateEvent {
 
 class UpdateBackdateStatus extends BackdateEvent {
   final String name;
+  final DateTime selectedDateTime;
   final bool isCheckIn;
-  UpdateBackdateStatus(this.name, {required this.isCheckIn});
+UpdateBackdateStatus(this.name, this.selectedDateTime, {required this.isCheckIn});
+
+  @override
+  List<Object?> get props => [name, selectedDateTime, isCheckIn];
+}
+
+class UpdateBackdateWithDateTime extends BackdateEvent {
+  final DateTime selectedDateTime;
+
+  UpdateBackdateWithDateTime({required this.selectedDateTime});
+
+  @override
+  List<Object> get props => [selectedDateTime];
 }
 
 

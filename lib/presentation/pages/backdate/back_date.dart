@@ -164,7 +164,11 @@ class _BackDatePageState extends State<BackDateAttPage> {
                                       _focusedDay = focusedDay;
                                     });
 
-                                    context.read<BackdateBloc>().add(FetchBackdate(date: _selectedDay!));
+                                    context.read<BackdateBloc>().add(
+                                      UpdateBackdateWithDateTime(
+                                        selectedDateTime: _selectedDay!,
+                                      ),
+                                    );
                                   }
                                 }
                               },
@@ -197,6 +201,7 @@ class _BackDatePageState extends State<BackDateAttPage> {
             Expanded(
               child: BlocBuilder<BackdateBloc, BackdateState>(
                 builder: (context, state) {
+                   print("Bloc State: $state"); 
                   if (state is BackDateLoading) {
                     return Center(
                       child: CircularProgressIndicator(),
@@ -301,6 +306,7 @@ class _BackDatePageState extends State<BackDateAttPage> {
       }
     }).toList();
 
+      print("Total backdate after filter: ${filtered.length}");
     return filtered;
   }
 }

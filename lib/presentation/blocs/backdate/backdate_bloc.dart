@@ -6,7 +6,7 @@ import 'package:myapp/presentation/blocs/backdate/backdate_state.dart';
 class BackdateBloc extends Bloc<BackdateEvent, BackdateState> {
   List<BackDate> allBackDate = [];
 
-  BackdateBloc() : super(BackDateLoading()) {
+    BackdateBloc() : super(BackDateLoading()) {
     on<FetchBackdate>(_onFetchBackdate);
     on<FilterBackdateEvent>(_onFilterBackdate);
     on<UpdateBackdateStatus>(_onUpdateBackdateStatus);
@@ -70,15 +70,41 @@ class BackdateBloc extends Bloc<BackdateEvent, BackdateState> {
   }
 
   void _onUpdateBackdateStatus(UpdateBackdateStatus event, Emitter<BackdateState> emit) {
+    
     final index = allBackDate.indexWhere((a) => a.name == event.name);
     if (index != -1) {
       final backdate = allBackDate[index];
       if (event.isCheckIn) {
-        allBackDate[index] = backdate.copyWith(checkIn: DateTime.now());
+        allBackDate[index] = backdate.copyWith(checkIn:event.selectedDateTime);
       } else {
-        allBackDate[index] = backdate.copyWith(checkOut: DateTime.now());
+        allBackDate[index] = backdate.copyWith(checkOut:event.selectedDateTime);
       }
       emit(BackdateLoaded(List.from(allBackDate)));
     }
   }
 }
+
+
+// class BackdateBloc extends Bloc<BackdateEvent, BackdateState> {
+//   List<BackDate> backdates = []; // Your current list of backdates
+
+//   BackdateBloc() : super(BackdateInitial()) {
+//     on<UpdateBackdateStatus>((event, emit) {
+//       // Update the backdate status based on the event
+//       List<BackDate> updatedBackdates = backdates.map((backdate) {
+//         if (backdate.name == event.name) {
+//           if (event.isCheckIn) {
+//             return backdate.copyWith(checkIn: event.selectedDateTime);
+//           } else {
+//             return backdate.copyWith(checkOut: event.selectedDateTime);
+//           }
+//         }
+//         return backdate;
+//       }).toList();
+
+//       // Emit the updated state
+//       emit(BackdateUpdated(updatedBackdates));
+//     });
+//   }
+// }
+

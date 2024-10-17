@@ -16,3 +16,13 @@ class BackdateError extends BackdateState {
   BackdateError(this.message);
 }
 
+class BackdateUpdated extends BackdateState {
+  final List<BackDate> updatedBackdates;
+
+  BackdateUpdated(this.updatedBackdates);
+
+  @override
+  List<Object?> get props => [updatedBackdates];
+}
+
+

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -11,7 +12,7 @@ class DocumentationStep extends StatefulWidget {
 }
 
 class _DocumentationStepState extends State<DocumentationStep> {
-  List<String> imagePath = []; // Initialize as an empty list
+  List<String> imagePaths = []; // Initialize as an empty list
 
   // Function to pick an image from gallery or camera
   Future<void> _pickImage() async {
@@ -42,10 +43,9 @@ class _DocumentationStepState extends State<DocumentationStep> {
       ),
     );
 
-    // If an image was picked, add its path to the list
     if (pickedFile != null) {
       setState(() {
-        imagePath.add(pickedFile.path); // Add the image path to the list
+        imagePaths.add(pickedFile.path); // Add the image path to the list
       });
     }
   }
@@ -54,7 +54,8 @@ class _DocumentationStepState extends State<DocumentationStep> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CardPicture(onTap: _pickImage, imagePath: imagePath.isNotEmpty ? imagePath[0] : null),
+        PictureStacker(imagePaths: imagePaths),
+        emptyCardPicture(onTap: _pickImage,),
         SizedBox(height: 20.0),
         IntrinsicHeight(
           child: TextField(
@@ -71,6 +72,63 @@ class _DocumentationStepState extends State<DocumentationStep> {
           ),
         ),
       ],
+    );
+  }
+}
+
+class PictureStacker extends StatelessWidget {
+  final List<String> imagePaths;
+
+  PictureStacker({required this.imagePaths});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: imagePaths.map((path) {
+        return SizedBox(
+          height: 300,
+          width: 300,
+          child: CardPicture(onTap: null, imagePath: path),
+        );
+      }).toList(),
+    );
+  }
+}
+
+class emptyCardPicture extends StatelessWidget {
+  const emptyCardPicture({this.onTap});
+
+  final Function()? onTap;
+  
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    
+    return Card(
+      color: Colors.white,
+      elevation: 3,
+      child: InkWell(
+        onTap: onTap,
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: 18, horizontal: 25),
+          width: size.width * .70,
+          height: 100,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Attach Picture',
+                style: TextStyle(fontSize: 17.0, color: Colors.grey[600]),
+              ),
+              Icon(
+                Icons.photo_camera,
+                color: Colors.indigo[400],
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
@@ -126,32 +184,7 @@ class CardPicture extends StatelessWidget {
         ),
       );
     }
+    return Text("Error in CardPicture");
 
-    return Card(
-      color: Colors.white,
-      elevation: 3,
-      child: InkWell(
-        onTap: onTap,
-        child: Container(
-          padding: EdgeInsets.symmetric(vertical: 18, horizontal: 25),
-          width: size.width * .70,
-          height: 100,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Attach Picture',
-                style: TextStyle(fontSize: 17.0, color: Colors.grey[600]),
-              ),
-              Icon(
-                Icons.photo_camera,
-                color: Colors.indigo[400],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
   }
 }

@@ -1,5 +1,6 @@
 abstract class BackdateEvent {}
 
+
 class FetchBackdate extends BackdateEvent {
     final DateTime date;
     FetchBackdate({required this.date});
@@ -15,11 +16,15 @@ class UpdateBackdateStatus extends BackdateEvent {
   final String name;
   final DateTime selectedDateTime;
   final bool isCheckIn;
-UpdateBackdateStatus(this.name, this.selectedDateTime, {required this.isCheckIn});
 
-  @override
-  List<Object?> get props => [name, selectedDateTime, isCheckIn];
+  UpdateBackdateStatus({
+    required this.name,
+    required this.selectedDateTime,
+    required this.isCheckIn,
+  });
 }
+
+
 
 class UpdateBackdateWithDateTime extends BackdateEvent {
   final DateTime selectedDateTime;

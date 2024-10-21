@@ -44,7 +44,7 @@ class _ReportLogisticsState extends State<ReportLogistics> {
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: Row(
                     children: [
-                      Icon(Icons.macro_off_outlined, color: _selectedIndex == 0 ? Colors.white : Colors.grey),
+                      Icon(Icons.pallet, color: _selectedIndex == 0 ? Colors.white : Colors.grey),
                       SizedBox(width: 4),
                       Text('Material', style: TextStyle(color: _selectedIndex == 0 ? Colors.white : Colors.grey)),
                     ],

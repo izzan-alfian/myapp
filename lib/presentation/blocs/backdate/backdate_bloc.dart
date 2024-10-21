@@ -6,7 +6,7 @@ import 'package:myapp/presentation/blocs/backdate/backdate_state.dart';
 class BackdateBloc extends Bloc<BackdateEvent, BackdateState> {
   List<BackDate> allBackDate = [];
 
-    BackdateBloc() : super(BackDateLoading()) {
+  BackdateBloc() : super(BackDateLoading()) {
     on<FetchBackdate>(_onFetchBackdate);
     on<FilterBackdateEvent>(_onFilterBackdate);
     on<UpdateBackdateStatus>(_onUpdateBackdateStatus);
@@ -30,7 +30,8 @@ class BackdateBloc extends Bloc<BackdateEvent, BackdateState> {
     }
   }
 
-  void _onFilterBackdate(FilterBackdateEvent event, Emitter<BackdateState> emit) {
+  void _onFilterBackdate(
+      FilterBackdateEvent event, Emitter<BackdateState> emit) {
     if (state is BackdateLoaded) {
       final loadedState = state as BackdateLoaded;
       List<BackDate> filteredBackdate = loadedState.allBackDate;
@@ -42,22 +43,28 @@ class BackdateBloc extends Bloc<BackdateEvent, BackdateState> {
       }
 
       if (event.filter == 'Non-checked') {
-      filteredBackdate = filteredBackdate.where((a) => a.checkIn == null).toList();
-    } else if (event.filter == 'Checked in') {
-      filteredBackdate = filteredBackdate.where((a) {
-        if (a.checkIn == null) return false; // Jika belum pernah check in
-        if (a.checkOut == null) return true; // Sudah check in tapi belum check out
-        
-        // Logika tambahan: Periksa apakah check-in terakhir adalah yang paling baru
-        return a.checkIn!.isAfter(a.checkOut!); // Tetap di "Checked in" jika check-in terbaru lebih lambat dari check-out terakhir
-      }).toList();
-    } else if (event.filter == 'Checked out') {
-      filteredBackdate = filteredBackdate.where((a) =>
-        a.checkOut != null &&
-        a.checkIn != null &&
-        a.checkIn!.isBefore(a.checkOut!) // Terfilter di "Checked out" jika check-in sebelum check-out
-      ).toList();
-    }
+        filteredBackdate =
+            filteredBackdate.where((a) => a.checkIn == null).toList();
+      } else if (event.filter == 'Checked in') {
+        filteredBackdate = filteredBackdate.where((a) {
+          if (a.checkIn == null) return false; // Jika belum pernah check in
+          if (a.checkOut == null)
+            return true; // Sudah check in tapi belum check out
+
+          // Logika tambahan: Periksa apakah check-in terakhir adalah yang paling baru
+          return a.checkIn!.isAfter(a
+              .checkOut!); // Tetap di "Checked in" jika check-in terbaru lebih lambat dari check-out terakhir
+        }).toList();
+      } else if (event.filter == 'Checked out') {
+        filteredBackdate = filteredBackdate
+            .where((a) =>
+                    a.checkOut != null &&
+                    a.checkIn != null &&
+                    a.checkIn!.isBefore(a
+                        .checkOut!) // Terfilter di "Checked out" jika check-in sebelum check-out
+                )
+            .toList();
+      }
 
       // Debugging: Print hasil filter
       print("Filtered backdate: ");
@@ -69,21 +76,29 @@ class BackdateBloc extends Bloc<BackdateEvent, BackdateState> {
     }
   }
 
-  void _onUpdateBackdateStatus(UpdateBackdateStatus event, Emitter<BackdateState> emit) {
-    
+  void _onUpdateBackdateStatus(
+      UpdateBackdateStatus event, Emitter<BackdateState> emit) {
     final index = allBackDate.indexWhere((a) => a.name == event.name);
     if (index != -1) {
       final backdate = allBackDate[index];
+
       if (event.isCheckIn) {
-        allBackDate[index] = backdate.copyWith(checkIn:event.selectedDateTime);
+        // Lakukan check-in
+        allBackDate[index] = backdate.copyWith(checkIn: event.selectedDateTime);
       } else {
-        allBackDate[index] = backdate.copyWith(checkOut:event.selectedDateTime);
+        // Lakukan check-out
+        allBackDate[index] =
+            backdate.copyWith(checkOut: event.selectedDateTime);
       }
+
+      // Emit state baru dengan data yang diperbarui
       emit(BackdateLoaded(List.from(allBackDate)));
+    } else {
+      // Emit state error jika backdate tidak ditemukan
+      emit(BackdateError("Backdate not found"));
     }
   }
 }
-
 
 // class BackdateBloc extends Bloc<BackdateEvent, BackdateState> {
 //   List<BackDate> backdates = []; // Your current list of backdates

@@ -44,7 +44,11 @@ class BackdateSearchDelegate extends SearchDelegate {
             itemCount: results.length,
             itemBuilder: (context, index) {
               final backdate = results[index];
-              return BackdateItem(backdate: backdate);
+              return BackdateItem(
+                backdate: backdate,
+                selectedCheckInTime: null, // Atau berikan waktu check-in yang sesuai
+                selectedCheckOutTime: null, // Atau berikan waktu check-out yang sesuai
+              );
             },
           );
         } else {

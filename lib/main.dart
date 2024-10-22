@@ -4,6 +4,8 @@ import 'package:myapp/presentation/blocs/attendances/attendances_bloc.dart';
 import 'package:myapp/presentation/blocs/attendances/attendances_event.dart';
 import 'package:myapp/presentation/blocs/backdate/backdate_bloc.dart';
 import 'package:myapp/presentation/blocs/backdate/backdate_event.dart';
+import 'package:myapp/presentation/blocs/logistic/logistic_bloc.dart';
+import 'package:myapp/presentation/blocs/logistic/logistic_event.dart';
 import 'package:myapp/presentation/component/layout_navbar.dart';
 
 void main() {
@@ -17,30 +19,36 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider<AttendancesBloc>(
           create: (context) => AttendancesBloc()..add(FetchAttendance(date: DateTime.now())),
-        ), 
+        ),
         BlocProvider<BackdateBloc>(
           create: (context) => BackdateBloc()..add(FetchBackdate(date: DateTime.now())),
         ),
-    
+        BlocProvider<LogisticBloc>(
+          create: (context) => LogisticBloc()..add(FetchLogistics()), // Fetch logistics data
+        ),
       ],
       child: MaterialApp(
-        theme: ThemeData(
-          fontFamily: 'Poppins',
-          textTheme: const TextTheme(
-            bodyLarge: TextStyle(fontSize: 16.0, fontWeight: FontWeight.normal),
-            bodyMedium: TextStyle(fontSize: 14.0, fontWeight: FontWeight.normal),
-            displayLarge: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
-        ),
-          bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-            backgroundColor: Colors.white,
-            selectedItemColor: Color(0xFF33499e),
-            unselectedItemColor: Colors.grey,
-            selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
-            unselectedLabelStyle: TextStyle(fontWeight: FontWeight.normal),
-            showUnselectedLabels: true,
-          ),
-        ),
+        theme: _buildTheme(), // Use a separate method to build theme
         home: LayoutNavbar(),
+      ),
+    );
+  }
+
+  ThemeData _buildTheme() {
+    return ThemeData(
+      fontFamily: 'Poppins',
+      textTheme: const TextTheme(
+        bodyLarge: TextStyle(fontSize: 16.0, fontWeight: FontWeight.normal),
+        bodyMedium: TextStyle(fontSize: 14.0, fontWeight: FontWeight.normal),
+        displayLarge: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+      ),
+      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+        backgroundColor: Colors.white,
+        selectedItemColor: Color(0xFF33499e),
+        unselectedItemColor: Colors.grey,
+        selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
+        unselectedLabelStyle: TextStyle(fontWeight: FontWeight.normal),
+        showUnselectedLabels: true,
       ),
     );
   }

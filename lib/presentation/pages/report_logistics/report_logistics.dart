@@ -1,78 +1,111 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:myapp/presentation/blocs/logistic/logistic_bloc.dart';
+import 'package:myapp/presentation/blocs/logistic/logistic_event.dart';
+import 'package:myapp/presentation/blocs/logistic/logistic_state.dart';
+import 'package:myapp/presentation/widgets/logistic/logistic_item.dart';
+import 'package:myapp/presentation/widgets/logistic/material_form.dart'; // Import halaman material form
 
-class ReportLogistics extends StatefulWidget {
-  @override
-  _ReportLogisticsState createState() => _ReportLogisticsState();
-}
-
-class _ReportLogisticsState extends State<ReportLogistics> {
-  int _selectedIndex = 0; // 0 for Material, 1 for Equipment
-
-  void _onToggleSelected(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
+class ReportLogistics extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    // Inisialisasi fetch logistics saat widget dibangun
+    BlocProvider.of<LogisticBloc>(context).add(FetchLogistics());
+
     return Scaffold(
-      backgroundColor: Color(0xFFf0f0f0),
+      backgroundColor: const Color(0xFFf0f0f0),
       appBar: AppBar(
-        backgroundColor: Color(0xFF33499e),
-        title: Text('Logistics Report', style: TextStyle(color: Colors.white)),
+        backgroundColor: const Color(0xFF33499e),
+        title: const Text('Logistics Report', style: TextStyle(color: Colors.white)),
       ),
-      body: Column(
-        children: [
-          // Filter Toggle Buttons
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: ToggleButtons(
-              color: Colors.white,
-              selectedColor: Colors.white,
-              fillColor: Color(0xFF33499e),
-              borderColor: Colors.white,
-              selectedBorderColor: Colors.white,
-              borderRadius: BorderRadius.circular(8.0),
-              isSelected: [
-                _selectedIndex == 0,
-                _selectedIndex == 1,
-              ],
-              onPressed: _onToggleSelected,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Row(
-                    children: [
-                      Icon(Icons.pallet, color: _selectedIndex == 0 ? Colors.white : Colors.grey),
-                      SizedBox(width: 4),
-                      Text('Material', style: TextStyle(color: _selectedIndex == 0 ? Colors.white : Colors.grey)),
-                    ],
-                  ),
+      body: BlocBuilder<LogisticBloc, LogisticState>(
+        builder: (context, state) {
+          // Jika belum ada data, tampilkan loading indicator
+          if (state.materialItems.isEmpty && state.equipmentItems.isEmpty) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          List<LogisticItem> items = state.isMaterialSelected
+              ? state.materialItems
+              : state.equipmentItems;
+
+          return Column(
+            children: [
+              // Filter Toggle Buttons
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: ToggleButtons(
+                  color: Colors.white,
+                  selectedColor: Colors.white,
+                  fillColor: const Color(0xFF33499e),
+                  borderColor: Colors.white,
+                  selectedBorderColor: Colors.white,
+                  borderRadius: BorderRadius.circular(8.0),
+                  isSelected: [
+                    state.isMaterialSelected,
+                    !state.isMaterialSelected,
+                  ],
+                  onPressed: (index) {
+                    BlocProvider.of<LogisticBloc>(context).add(
+                      ToggleLogisticType(index == 0), // Event ToggleLogisticType
+                    );
+                  },
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Row(
+                        children: [
+                          Icon(Icons.pallet, color: state.isMaterialSelected ? Colors.white : Colors.grey),
+                          const SizedBox(width: 4),
+                          Text('Material', style: TextStyle(color: state.isMaterialSelected ? Colors.white : Colors.grey)),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Row(
+                        children: [
+                          Icon(Icons.build, color: !state.isMaterialSelected ? Colors.white : Colors.grey),
+                          const SizedBox(width: 4),
+                          Text('Equipment', style: TextStyle(color: !state.isMaterialSelected ? Colors.white : Colors.grey)),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Row(
-                    children: [
-                      Icon(Icons.build, color: _selectedIndex == 1 ? Colors.white : Colors.grey),
-                      SizedBox(width: 4),
-                      Text('Equipment', style: TextStyle(color: _selectedIndex == 1 ? Colors.white : Colors.grey)),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          // Display content based on selected filter
-          Expanded(
-            child: Center(
-              child: Text(
-                _selectedIndex == 0 ? 'Selected: Material' : 'Selected: Equipment',
-                style: TextStyle(fontSize: 20),
               ),
-            ),
-          ),
-        ],
+              // ListView with items
+              Expanded(
+                child: ListView.builder(
+                  itemCount: items.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      title: Text(items[index].name),
+                      subtitle: Text('Quantity: ${items[index].quantity}'),
+                      trailing: Checkbox(
+                        value: state.isChecked[index],
+                        onChanged: (bool? value) {
+                          BlocProvider.of<LogisticBloc>(context).add(
+                            ToggleCheckBox(index: index, isChecked: value ?? false), // Event ToggleCheckBox
+                          );
+                        },
+                      ),
+                      onTap: () {
+                        // Navigasi ke MaterialFormPage saat item ListView ditekan
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MaterialFormPage(index: index), // Mengirim index item ke MaterialFormPage
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }

@@ -50,11 +50,17 @@ class _DocumentationStepState extends State<DocumentationStep> {
     }
   }
 
+  void _removeImage(String path) {
+    setState(() {
+      imagePaths.remove(path); // Remove the image path from the list
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        PictureStacker(imagePaths: imagePaths),
+        PictureStacker(imagePaths: (imagePaths), removeImage: _removeImage,),
         emptyCardPicture(onTap: _pickImage,),
         SizedBox(height: 20.0),
         IntrinsicHeight(
@@ -78,8 +84,9 @@ class _DocumentationStepState extends State<DocumentationStep> {
 
 class PictureStacker extends StatelessWidget {
   final List<String> imagePaths;
+  final Function(String) removeImage;
 
-  PictureStacker({required this.imagePaths});
+  PictureStacker({required this.imagePaths, required this.removeImage});
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +95,7 @@ class PictureStacker extends StatelessWidget {
         return SizedBox(
           height: 300,
           width: 300,
-          child: CardPicture(onTap: null, imagePath: path),
+          child: CardPicture(onTap: () {removeImage(path);}, imagePath: path), //here
         );
       }).toList(),
     );
@@ -164,16 +171,10 @@ class CardPicture extends StatelessWidget {
                 decoration: const BoxDecoration(
                   shape: BoxShape.circle,
                   color: Colors.redAccent,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black,
-                      offset: Offset(3.0, 3.0),
-                      blurRadius: 2.0,
-                    ),
-                  ],
                 ),
                 child: IconButton(
                   onPressed: () {
+                    onTap?.call();
                     print('Delete icon pressed');
                   },
                   icon: Icon(Icons.delete, color: Colors.white),
@@ -185,6 +186,5 @@ class CardPicture extends StatelessWidget {
       );
     }
     return Text("Error in CardPicture");
-
   }
 }

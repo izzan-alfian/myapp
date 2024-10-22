@@ -46,16 +46,15 @@ class _DailyReportPageState extends State<DailyReportPage> {
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                   ),
-                  child: const Text(
-                    'NEXT',
-                    style: TextStyle(color: Colors.white),
+                  child: Text(
+                    (_step == 3) ? 'SEND' : "NEXT",
+                    style: const TextStyle(color: Colors.white),
                   ),
                 ),
-                if (_step >
-                    0) // Show CANCEL only if the current step is greater than 0
+                if (_step > 0) // Show CANCEL only if the current step is greater than 0
                   TextButton(
                     onPressed: details.onStepCancel,
-                    child: const Text('BACK'),
+                    child: const Text('BACK', style: TextStyle(color: Colors.blueAccent),),
                   ),
               ],
             );

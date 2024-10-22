@@ -8,6 +8,8 @@ class ProjectAndTaskPage extends StatefulWidget {
 
 class _ProjectAndTaskState extends State<ProjectAndTaskPage> {
   final List<int> _items = List<int>.generate(5, (int index) => index);
+  final TextEditingController _controller = TextEditingController(text: "Pre-filled text");
+  List<String> supervisorConsultants = ["A", "B", "C", "D", "E", "F", "G"];
 
   @override
   Widget build(BuildContext context) {
@@ -51,20 +53,47 @@ class _ProjectAndTaskState extends State<ProjectAndTaskPage> {
       );
     }
 
-    return ReorderableListView( 
-      scrollDirection: Axis.vertical,
-      padding: const EdgeInsets.symmetric(horizontal: 40),
-      proxyDecorator: proxyDecorator,
-      onReorder: (int oldIndex, int newIndex) {
-        setState(() {
-          if (oldIndex < newIndex) {
-            newIndex -= 1;
-          }
-          final int item = _items.removeAt(oldIndex);
-          _items.insert(newIndex, item);
-        });
-      },
-      children: containers,
+    // return ReorderableListView( 
+    //   scrollDirection: Axis.vertical,
+    //   padding: const EdgeInsets.symmetric(horizontal: 40),
+    //   proxyDecorator: proxyDecorator,
+    //   onReorder: (int oldIndex, int newIndex) {
+    //     setState(() {
+    //       if (oldIndex < newIndex) {
+    //         newIndex -= 1;
+    //       }
+    //       final int item = _items.removeAt(oldIndex);
+    //       _items.insert(newIndex, item);
+    //     });
+    //   },
+    //   children: containers,
+    // );
+
+    return Column(
+      children: [
+        TextField(
+          controller: _controller, // Link the controller
+          decoration: InputDecoration(
+            labelText: 'Enter some text',
+          ),
+        ),
+        DropdownButtonFormField<String>(
+          value: null, //set to value: dropdownvalue in order to set default value
+          decoration: const InputDecoration(
+            enabled: true,
+            filled: true,
+            fillColor: Colors.white,
+            border: InputBorder.none,
+          ),
+          items: supervisorConsultants.map((String consultant) {
+            return DropdownMenuItem<String>(
+              value: consultant,
+              child: Text(consultant),
+            );
+          }).toList(),
+          onChanged: (String? newValue) {},
+        ),
+      ],
     );
   }
 

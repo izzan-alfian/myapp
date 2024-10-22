@@ -88,6 +88,7 @@ class _ProjectSelectStepState extends State<ProjectSelectStep> {
                     value: null, //set to value: dropdownvalue in order to set default value
                     decoration: InputDecoration(
                       labelText: 'Project name',
+                      enabled: false,
                       filled: true,
                       fillColor: Colors.white,
                       border: OutlineInputBorder(
@@ -101,11 +102,12 @@ class _ProjectSelectStepState extends State<ProjectSelectStep> {
                         child: Text(value),
                       );
                     }).toList(),
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        dropdownValue = newValue!;
-                      });
-                    },
+                    onChanged: null,
+                    // onChanged: (String? newValue) {
+                    //   setState(() {
+                    //     dropdownValue = newValue!;
+                    //   });
+                    // },
                   ),
 
 
@@ -205,34 +207,6 @@ class _ProjectSelectStepState extends State<ProjectSelectStep> {
             },
           ),
         ),
-
-        SizedBox(height: 20.0),
-
-        TextField(
-          controller: _kontrakNo,
-          enabled: false,
-          decoration: InputDecoration(
-            labelText: "Kontrak No. Tanggal",
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-          ),
-        ),
-
-        SizedBox(height: 10.0),
-
-        TextField(
-          controller: _smpkNo,
-          enabled: false,
-          decoration: InputDecoration(
-            labelText: "SMPK No. Tanggal",
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-          ),
-        ),
-
-        SizedBox(height: 10.0),
       ]);
   }
 }

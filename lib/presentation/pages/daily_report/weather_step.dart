@@ -1,12 +1,5 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:fl_chart/fl_chart.dart';
-
 import 'dart:ui';
-
-import 'package:flutter_bloc/flutter_bloc.dart';
-
 
 class WeatherStep extends StatefulWidget {
   const WeatherStep({Key? key}) : super(key: key);
@@ -17,15 +10,14 @@ class WeatherStep extends StatefulWidget {
 
 class _WeatherStepState extends State<WeatherStep> {
   int touchIndex = -1;
-  // List to hold the containers
-  List<Container> containers = [];
   List<WeatherDesc> weathers = [];
   final ScrollController _scrollController = ScrollController();
-  int? selectedWeatherIndex;
+
+  List<String> weatherTypes = ["Clear", "Raining", "Cloudy", "Wind", "Drizzle", "Fog", "Snow"];
 
   @override
   void dispose() {
-    _scrollController.dispose(); // Dispose the controller when done
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -33,150 +25,142 @@ class _WeatherStepState extends State<WeatherStep> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SizedBox(height: 300,
-          child:
-            weathers.isEmpty ?
-              Center(
-                child: ElevatedButton(
-                  onPressed: _addContainer,
-                  child: Icon(Icons.add),
+        SizedBox(
+          height: 300,
+          child: weathers.isEmpty
+              ? Center(
+                  child: ElevatedButton(
+                    onPressed: _addContainer,
+                    child: Icon(Icons.add),
+                  ),
+                )
+              : ListView.builder(
+                  controller: _scrollController,
+                  scrollDirection: Axis.horizontal,
+                  itemCount: weathers.length,
+                  itemBuilder: (context, index) {
+                    return _buildWeatherContainer(index);
+                  },
                 ),
-              )
-            :
-              ListView.builder(
-                controller: _scrollController,
-                scrollDirection: Axis.horizontal,
-                itemCount: weathers.length,
-                itemBuilder: (context, index) {
-                  return Row(
-                    children: [
-                      InkWell(
-                        onTap: () async {
-                          TimeOfDay? pickedTime = await showTimePicker(
-                            context: context,
-                            initialTime: TimeOfDay.now(),
-                          );
-                        },
-                        child: Container(
-                          width: 150,
-                          height: 300,
-                          margin: const EdgeInsets.only(top: 10.0, bottom: 10.0), // Made EdgeInsets const
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(100.0),
-                            border: Border.all(
-                              color: Colors.black,
-                              width: 1.0,
-                            ),
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(weathers[index].start.format(context), style: TextStyle(color: Colors.grey)),
-                                  Text(" - ", style: TextStyle(color: Colors.grey)),
-                                  Text(weathers[index].end.format(context), style: TextStyle(color: Colors.grey)),
-                                ],
-                              ),
-                              Text("${weathers[index].weather}", style: TextStyle(fontSize: 25.0)),
-                              GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    weathers.removeAt(index); // Removes current item instead of last container
-                                  });
-                                },
-                                child: const Icon(Icons.delete),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 10),
-                      if (index == weathers.length - 1)
-                        ElevatedButton(
-                          onPressed: _addContainer,
-                          child: Icon(Icons.add),
-                        ),
-                    ],
-                  );
-                },
-              ),
-
-
         ),
-
-        SizedBox(height: 20.0,),
-
-        // Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-        //   Transform.scale(
-        //     scaleX: -1,
-        //     child: SizedBox(   
-        //       width: 150.0,
-        //       height: 150.0,
-        //         child: AspectRatio(
-        //         aspectRatio: 1,
-        //         child: PieChart(
-        //           PieChartData(
-        //             sectionsSpace: 0.0,
-        //             centerSpaceRadius: 0.0,
-        //             startDegreeOffset: -90.0,
-        //             borderData: FlBorderData(show: false),
-        //             sections: showingSections(),
-        //           ),
-        //         ),
-        //       ),
-        //     ),
-        //   ),
-        // SizedBox(   
-        //     width: 150.0,
-        //     height: 150.0,  
-        //       child: AspectRatio(
-        //       aspectRatio: 1,
-        //       child: PieChart(
-        //         PieChartData(
-        //           sections: showingSections(),
-        //           borderData: FlBorderData(show: false),
-        //           centerSpaceRadius: 0.0,
-        //         ),
-        //       ),
-        //     ),
-        //   ),
-        // ],)
-
+        SizedBox(height: 20.0),
       ],
     );
   }
 
-  // List<PieChartSectionData> showingSections() {
-  //   return List.generate(2, (i) {
-  //     final isTouched = i == 0; // Example: Highlighting the second section
-  //     final double fontSize = isTouched ? 25 : 16;
-  //     final double radius = isTouched ? 60 : 50;
+  Widget _buildWeatherContainer(int index) {
+    return Row(
+      children: [
+        Container(
+          width: 150,
+          height: 300,
+          margin: const EdgeInsets.symmetric(vertical: 10.0),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(15.0), bottom: Radius.circular(100.0)),
+            border: Border.all(color: Colors.grey, width: 1.0),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Column(children: [
 
-  //     switch (i) {
-  //       case 0:
-  //         return PieChartSectionData(
-  //           color: Colors.blue,
-  //           value: 240,
-  //           title: 'B%',
-  //           radius: radius,
-  //           titleStyle: TextStyle(fontSize: fontSize, color: Colors.white),
-  //         );
-  //       case 1:
-  //         return PieChartSectionData(
-  //           color: Colors.red,
-  //           value: 480,
-  //           title: 'R%',
-  //           radius: radius,
-  //           titleStyle: TextStyle(fontSize: fontSize, color: Colors.white),
-  //         );
-  //       default:
-  //         throw Error();
-  //     }
-  //   });
-  // }
+                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  Icon(Icons.more_vert_rounded, color: Colors.grey,),
+                  SizedBox(height: 15.0,),
+                    _buildTimePicker('Start Time', weathers[index].start, (pickedTime) {
+                      setState(() {
+                        weathers[index].start = pickedTime;
+                      });
+                    }),
+                ],),
+
+                SizedBox(height: 5.0,),
+
+                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  Icon(Icons.subdirectory_arrow_right_rounded, color: Colors.grey),
+                  _buildTimePicker('End Time', weathers[index].end, (pickedTime) {
+                  setState(() {
+                    weathers[index].end = pickedTime;
+                  });
+                }),
+                ],)
+              ],),
+              Icon(Icons.sunny, size: 50.0),
+              _buildWeatherDropdown(index),
+              _buildDeleteButton(index),
+            ],
+          ),
+        ),
+        SizedBox(width: 10),
+        if (index == weathers.length - 1)
+          ElevatedButton(
+            onPressed: _addContainer,
+            child: Icon(Icons.add),
+          ),
+      ],
+    );
+  }
+
+  Widget _buildTimePicker(String label, TimeOfDay time, Function(TimeOfDay) onTimeSelected) {
+    return InkWell(
+      onTap: () async {
+        TimeOfDay? pickedTime = await showTimePicker(
+          context: context,
+          initialTime: time,
+        );
+        if (pickedTime != null) {
+          onTimeSelected(pickedTime);
+        }
+      },
+      child: Container(
+        alignment: Alignment.center,
+        width: 100.0,
+        decoration: BoxDecoration(
+          border: Border.all(width: 0.5 , color: Colors.grey),
+          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+        ),
+        child: Text(time.format(context), style: TextStyle(fontSize: 20.0)),
+      ),
+    );
+  }
+
+  Widget _buildWeatherDropdown(int index) {
+    return SizedBox(
+      width: 110,
+      child: DropdownButtonFormField<String>(
+        value: weathers[index].weather,
+        decoration: const InputDecoration(
+          enabled: true,
+          filled: true,
+          fillColor: Colors.white,
+          border: InputBorder.none,
+        ),
+        items: weatherTypes.map((String weather) {
+          return DropdownMenuItem<String>(
+            value: weather,
+            child: Text(weather),
+          );
+        }).toList(),
+        onChanged: (String? newValue) {
+          setState(() {
+            weathers[index].weather = newValue!;
+          });
+        },
+      ),
+    );
+  }
+
+  Widget _buildDeleteButton(int index) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          weathers.removeAt(index);
+        });
+      },
+      child: const Icon(Icons.delete),
+    );
+  }
 
   void _addContainer() {
     setState(() {
@@ -186,26 +170,13 @@ class _WeatherStepState extends State<WeatherStep> {
   }
 
   void _scrollToRight() {
-    // Check if the controller is attached
     if (_scrollController.hasClients) {
-      // Scroll to the right by a fixed amount (e.g., width of a container + spacing)
       _scrollController.animateTo(
-        _scrollController.position.pixels + 110, // 100 (width) + 10 (spacing)
+        _scrollController.position.pixels + 160,
         duration: Duration(milliseconds: 300),
         curve: Curves.easeInOut,
       );
     }
-  }
-
-  List<Widget> _buildContainerList() {
-    List<Widget> containerList = [];
-    for (int i = 0; i < containers.length; i++) {
-      containerList.add(containers[i]);
-      if (i < containers.length - 1) {
-        containerList.add(SizedBox(width: 10.0)); // Add SizedBox between containers
-      }
-    }
-    return containerList;
   }
 }
 
@@ -215,9 +186,8 @@ class WeatherDesc {
   TimeOfDay end;
 
   WeatherDesc({
-    this.weather = "Sunny",
+    this.weather = "Clear",
     TimeOfDay? start,
-    this.end = const TimeOfDay(hour: 17, minute: 0),
-  }) : start = start ?? TimeOfDay.now();
+    this.end = const TimeOfDay(hour: 0, minute: 0),
+  }) : start = start ?? const TimeOfDay(hour: 24, minute: 0);
 }
-

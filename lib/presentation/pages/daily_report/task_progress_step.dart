@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' as intl;
 
@@ -15,19 +13,20 @@ class _TaskProgressStepState extends State<TaskProgressStep> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-
-      Container(
-        decoration: BoxDecoration(border: Border.all(color: Color(0xFFb6bdc4)), borderRadius: BorderRadius.all(Radius.circular(20.0))),
-        child: ClipRRect(
-          borderRadius: BorderRadius.all(Radius.circular(20.0)),
-          child: ExpansionPanelListExample(),
+    return Column(
+      children: [
+        Container(
+          decoration: BoxDecoration(
+              border: Border.all(color: Color(0xFFb6bdc4)),
+              borderRadius: BorderRadius.all(Radius.circular(20.0))),
+          child: ClipRRect(
+            borderRadius: BorderRadius.all(Radius.circular(20.0)),
+            child: ExpansionPanelListExample(),
+          ),
         ),
-      ),
-
-      SizedBox(height: 20.0),
-
-    ],);
+        SizedBox(height: 20.0),
+      ],
+    );
   }
 }
 
@@ -59,20 +58,24 @@ class _ExpansionPanelListExampleState extends State<ExpansionPanelListExample> {
         setState(() {
           _data[index].isExpanded = isExpanded;
         });
-      },  
+      },
       children: _data.map<ExpansionPanel>((Item item) {
         return ExpansionPanel(
-          backgroundColor: item.isExpanded ? const Color(0x00000000) : Colors.white,
+          backgroundColor:
+              item.isExpanded ? const Color(0x00000000) : Colors.white,
           canTapOnHeader: true,
           headerBuilder: (BuildContext context, bool isExpanded) {
             bool isSliderModified = item.expandedValue.any((listBuilder) {
-              return listBuilder.actualWeight != listBuilder.finalWeight;     // logic behind the yellow dot appearance when slider value is edited
+              return listBuilder.actualWeight !=
+                  listBuilder
+                      .finalWeight; // logic behind the yellow dot appearance when slider value is edited
             });
             return ListTile(
               title: Row(
                 children: [
-                  SizedBox(width: 10.0,),
-
+                  SizedBox(
+                    width: 10.0,
+                  ),
                   Container(
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
@@ -80,20 +83,31 @@ class _ExpansionPanelListExampleState extends State<ExpansionPanelListExample> {
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                     child: Padding(
-                      padding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
-                      child: Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
-                        Text("${item.expandedValue.length} ", style: TextStyle(color: Color((0xFFb6bdc4))),),
-                        Text("tasks", style: TextStyle(color: Color((0xFFb6bdc4)), fontSize: 14.0),),
-                      ],)
-                      ),
+                        padding: EdgeInsets.fromLTRB(5.0, 0.0, 5.0, 0.0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              "${item.expandedValue.length} ",
+                              style: TextStyle(color: Color((0xFFb6bdc4))),
+                            ),
+                            Text(
+                              "tasks",
+                              style: TextStyle(
+                                  color: Color((0xFFb6bdc4)), fontSize: 14.0),
+                            ),
+                          ],
+                        )),
                   ),
-
-                  SizedBox(width: 10.0,),
-
+                  SizedBox(
+                    width: 10.0,
+                  ),
                   Text("${item.headerValue}  "),
-
-                  if (isSliderModified) const Icon(Icons.circle, size: 7.0, color: Color(0xFFffd166)),
-                  ],),
+                  if (isSliderModified)
+                    const Icon(Icons.circle,
+                        size: 7.0, color: Color(0xFFffd166)),
+                ],
+              ),
             );
           },
           body: Column(
@@ -102,7 +116,8 @@ class _ExpansionPanelListExampleState extends State<ExpansionPanelListExample> {
                 listBuilder,
                 const SizedBox(height: 20.0),
               ];
-            }).toList()..removeLast(), // Remove the last SizedBox
+            }).toList()
+              ..removeLast(), // Remove the last SizedBox
           ),
           isExpanded: item.isExpanded,
         );
@@ -135,7 +150,7 @@ class ListBuilder extends StatefulWidget {
   final DateTime startDate;
   final DateTime endTime;
   final bool isOverdue;
-  double finalWeight;         // represent final actualWeight
+  double finalWeight; // represent final actualWeight
 
   ListBuilder({
     super.key,
@@ -153,178 +168,233 @@ class ListBuilder extends StatefulWidget {
 
 class _ListBuilderState extends State<ListBuilder> {
   double initProgressValue = 0;
-  double _currentSliderValue = 0; //temporarily set to 0 because flutter require the top variable to be initialized, but this variable's value will definitely determined in initState()
+  double _currentSliderValue =
+      0; //temporarily set to 0 because flutter require the top variable to be initialized, but this variable's value will definitely determined in initState()
   TextEditingController percentageTextController = TextEditingController();
   TextEditingController weightTextController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    initProgressValue = widget.actualWeight / widget.plannedWeight * 100; // Permanent initial progress representation
-    _currentSliderValue = initProgressValue;                        // Editable slider value
+    initProgressValue = widget.actualWeight /
+        widget.plannedWeight *
+        100; // Permanent initial progress representation
+    _currentSliderValue = initProgressValue; // Editable slider value
   }
 
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     return Stack(
-    children: [
-      Container(
-        height: 105,
-        width: screenWidth,
-        decoration: BoxDecoration(
-          color: getActiveColor(widget.actualWeight, _currentSliderValue),
-          border: Border.all(color: getActiveColor(initProgressValue, _currentSliderValue), width: 2.0),
-          borderRadius: BorderRadius.circular(15.0)
-        ),
-      ),
-      Positioned(
-        right: 0,
-        child: Container(
+      children: [
+        Container(
           height: 105,
-          width: screenWidth - 52.0,
+          width: screenWidth,
           decoration: BoxDecoration(
-            color: Colors.white,
-            border: Border.all(color: getActiveColor(initProgressValue, _currentSliderValue), width: 2.0),
-            // border: Border(left: BorderSide(color: getActiveColor(widget.progress, _currentSliderValue), width: 2.0)),
-            borderRadius: BorderRadius.circular(15.0)
-          ),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-                child: Column(
-                  children: [
-                    Row(
+              color: getActiveColor(widget.actualWeight, _currentSliderValue),
+              border: Border.all(
+                  color: getActiveColor(initProgressValue, _currentSliderValue),
+                  width: 2.0),
+              borderRadius: BorderRadius.circular(15.0)),
+        ),
+        Positioned(
+          right: 0,
+          child: Container(
+              height: 105,
+              width: screenWidth - 52.0,
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(
+                      color: getActiveColor(
+                          initProgressValue, _currentSliderValue),
+                      width: 2.0),
+                  // border: Border(left: BorderSide(color: getActiveColor(widget.progress, _currentSliderValue), width: 2.0)),
+                  borderRadius: BorderRadius.circular(15.0)),
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                    child: Column(
                       children: [
-                        Expanded(
-                          child:
-                            Text("• ${widget.projectName}",
-                              style: const TextStyle(color: Color(0xFF363537), fontSize: 18.0)),),
-                            widget.isOverdue ?
-                              const Text("Overdue •",
-                                style:TextStyle(color: Colors.redAccent, fontSize: 18.0, fontWeight: FontWeight.w600),) :
-                              const Text("")
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child:
-                            SizedBox(
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text("• ${widget.projectName}",
+                                  style: const TextStyle(
+                                      color: Color(0xFF363537),
+                                      fontSize: 18.0)),
+                            ),
+                            widget.isOverdue
+                                ? const Text(
+                                    "Overdue •",
+                                    style: TextStyle(
+                                        color: Colors.redAccent,
+                                        fontSize: 18.0,
+                                        fontWeight: FontWeight.w600),
+                                  )
+                                : const Text("")
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                                child: SizedBox(
                               height: 20,
                               child: SliderTheme(
                                 data: SliderThemeData(
-                                  // trackShape: CustomTrackShape(),
-                                  // thumbShape: const CustomSliderThumbShape(),
-                                  // overlayShape: const CustomSliderOverlayShape(),
-                                ),
+                                    // trackShape: CustomTrackShape(),
+                                    // thumbShape: const CustomSliderThumbShape(),
+                                    // overlayShape: const CustomSliderOverlayShape(),
+                                    ),
                                 child: Slider(
                                   value: _currentSliderValue.toDouble(),
                                   max: 100,
                                   min: 0,
-                                  activeColor: getActiveColor(initProgressValue, _currentSliderValue),
+                                  activeColor: getActiveColor(
+                                      initProgressValue, _currentSliderValue),
                                   inactiveColor: Colors.grey,
-                                  thumbColor: getActiveColor(initProgressValue, _currentSliderValue),
+                                  thumbColor: getActiveColor(
+                                      initProgressValue, _currentSliderValue),
                                   label: _currentSliderValue.round().toString(),
                                   onChanged: (double value) {
                                     setState(() {
                                       if (value > initProgressValue) {
-                                        _currentSliderValue = double.parse(value.toStringAsFixed(4));
-                                        widget.finalWeight = double.parse(value.toStringAsFixed(4)) / 100.0 * widget.plannedWeight;
+                                        _currentSliderValue = double.parse(
+                                            value.toStringAsFixed(4));
+                                        widget.finalWeight = double.parse(
+                                                value.toStringAsFixed(4)) /
+                                            100.0 *
+                                            widget.plannedWeight;
+                                      } else {
+                                        _currentSliderValue =
+                                            widget.actualWeight /
+                                                widget.plannedWeight *
+                                                100.0;
+                                        widget.finalWeight =
+                                            widget.actualWeight /
+                                                widget.plannedWeight *
+                                                widget.plannedWeight;
                                       }
-                                      else {
-                                        _currentSliderValue = widget.actualWeight / widget.plannedWeight * 100.0;
-                                        widget.finalWeight = widget.actualWeight / widget.plannedWeight * widget.plannedWeight;
-                                      }
-                                      percentageTextController.text = _currentSliderValue.toStringAsFixed(4);
-                                      weightTextController.text = widget.finalWeight.toStringAsFixed(4);
+                                      percentageTextController.text =
+                                          _currentSliderValue
+                                              .toStringAsFixed(4);
+                                      weightTextController.text =
+                                          widget.finalWeight.toStringAsFixed(4);
                                     });
                                   },
                                 ),
                               ),
-                            )
-                        ),
-
-                        const SizedBox(width: 10.0,height: 30.0,),
-                        
-                        SizedBox(
-                          width: 80,
-                          height: 20,
-                          child: TextField(
-                            keyboardType: TextInputType.number,
-                            controller: percentageTextController,
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText: _currentSliderValue.toStringAsFixed(4),
+                            )),
+                            const SizedBox(
+                              width: 10.0,
+                              height: 30.0,
                             ),
-                            onSubmitted: (text) {
-                              setState(() {
-                                double? value = double.tryParse(text);
-                                if (value != null) {
-                                  if      (value < initProgressValue) {value = initProgressValue;}
-                                  else if (value > 100.0)             {value = 100.0;}
-                                  _currentSliderValue = value;
-                                  percentageTextController.text = _currentSliderValue.toStringAsFixed(4);
-                                  widget.finalWeight = _currentSliderValue / 100.0 * widget.plannedWeight;
-                                  weightTextController.text = widget.finalWeight.toStringAsFixed(4);
-                                }
-                              });
-                            },
-                          ),
+                            SizedBox(
+                              width: 80,
+                              height: 20,
+                              child: TextField(
+                                keyboardType: TextInputType.number,
+                                controller: percentageTextController,
+                                decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  hintText:
+                                      _currentSliderValue.toStringAsFixed(4),
+                                ),
+                                onSubmitted: (text) {
+                                  setState(() {
+                                    double? value = double.tryParse(text);
+                                    if (value != null) {
+                                      if (value < initProgressValue) {
+                                        value = initProgressValue;
+                                      } else if (value > 100.0) {
+                                        value = 100.0;
+                                      }
+                                      _currentSliderValue = value;
+                                      percentageTextController.text =
+                                          _currentSliderValue
+                                              .toStringAsFixed(4);
+                                      widget.finalWeight = _currentSliderValue /
+                                          100.0 *
+                                          widget.plannedWeight;
+                                      weightTextController.text =
+                                          widget.finalWeight.toStringAsFixed(4);
+                                    }
+                                  });
+                                },
+                              ),
+                            ),
+                            const Text("%"),
+                          ],
                         ),
-
-                        const Text("%"),
-
+                        Row(
+                          children: [
+                            Expanded(
+                                child: Row(
+                              children: [
+                                Text(
+                                  intl.DateFormat('dd MMM yyyy')
+                                      .format(widget.startDate),
+                                  style: const TextStyle(
+                                      color: Colors.grey, fontSize: 10.0),
+                                ),
+                                const Text(
+                                  " - ",
+                                  style: TextStyle(
+                                      color: Colors.grey, fontSize: 10.0),
+                                ),
+                                Text(
+                                  intl.DateFormat('dd MMM yyyy')
+                                      .format(widget.startDate),
+                                  style: const TextStyle(
+                                      color: Colors.grey, fontSize: 10.0),
+                                )
+                              ],
+                            )),
+                            Text("${widget.plannedWeight} → "),
+                            SizedBox(
+                              width: 60,
+                              height: 20,
+                              child: TextField(
+                                keyboardType: TextInputType.number,
+                                controller: weightTextController,
+                                decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  hintText: widget.finalWeight.toString(),
+                                ),
+                                onSubmitted: (text) {
+                                  setState(() {
+                                    double? value = double.tryParse(text);
+                                    if (value != null) {
+                                      if (value <= widget.actualWeight) {
+                                        value = widget.actualWeight;
+                                      } else if (value > widget.plannedWeight) {
+                                        value = widget.plannedWeight;
+                                      }
+                                      _currentSliderValue =
+                                          value / widget.plannedWeight * 100;
+                                      weightTextController.text =
+                                          value.toStringAsFixed(4);
+                                      percentageTextController.text =
+                                          _currentSliderValue
+                                              .toStringAsFixed(4);
+                                      widget.finalWeight = _currentSliderValue /
+                                          100.0 *
+                                          widget.plannedWeight;
+                                    }
+                                  });
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
                       ],
                     ),
-
-                    Row( children: [
-                      Expanded(child: Row(children: [
-                        Text(intl.DateFormat('dd MMM yyyy').format(widget.startDate), style: const TextStyle(color: Colors.grey, fontSize: 10.0),),
-                        const Text(" - "                                                  , style: TextStyle(color: Colors.grey, fontSize: 10.0),),
-                        Text(intl.DateFormat('dd MMM yyyy').format(widget.startDate), style: const TextStyle(color: Colors.grey, fontSize: 10.0),)
-                      ],)),
-
-                      Text("${widget.plannedWeight} → "),
-                      
-                      SizedBox(
-                        width: 60,
-                        height: 20,
-                        child: TextField(
-                          keyboardType: TextInputType.number,
-                          controller: weightTextController,
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            hintText: widget.finalWeight.toString(),
-                          ),
-                          onSubmitted: (text) {
-                            setState(() {
-                              double? value = double.tryParse(text);
-                              if (value != null) {
-                                  if      (value <= widget.actualWeight) {value = widget.actualWeight;}
-                                  else if (value > widget.plannedWeight) {value = widget.plannedWeight;}
-                                  _currentSliderValue = value / widget.plannedWeight * 100;
-                                  weightTextController.text = value.toStringAsFixed(4);
-                                  percentageTextController.text = _currentSliderValue.toStringAsFixed(4);
-                                  widget.finalWeight = _currentSliderValue / 100.0 * widget.plannedWeight;
-                                }
-                            });
-                          },
-                        ),
-                      ),
-
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          )
+                  ),
+                ],
+              )),
         ),
-      ),
-    ],
-  );
+      ],
+    );
   }
 }
 
@@ -361,7 +431,6 @@ List<ListBuilder> generateTasks(int numberOfTask) {
     );
   });
 }
-
 
 Color getActiveColor(double initProgress, double currentSliderValue) {
   if (currentSliderValue <= initProgress) {

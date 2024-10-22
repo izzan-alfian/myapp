@@ -51,6 +51,5 @@ class SetVolumeReceived extends LogisticEvent {
   SetVolumeReceived({required this.index, required this.volume});
   
   @override
-  // TODO: implement props
-  List<Object?> get props => throw UnimplementedError();
+ List<Object?> get props => [volume];
 }

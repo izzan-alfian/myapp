@@ -3,6 +3,7 @@ import 'package:myapp/presentation/pages/attendances/attendances.dart';
 import 'package:myapp/presentation/pages/daily_report/daily_report.dart';
 import 'package:myapp/presentation/pages/report_logistics/report_logistics.dart';
 import 'package:myapp/presentation/pages/project_and_task/project_and_task.dart';
+import 'package:myapp/presentation/pages/dashboard/dashboard.dart';
 
 class LayoutNavbar extends StatefulWidget {
   @override
@@ -68,21 +69,3 @@ class _LayoutNavbarState extends State<LayoutNavbar> {
     );
   }
 }
-
-// Halaman dummy untuk demonstrasi
-class DashboardPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color(0xFFf0f0f0),
-      appBar: AppBar(
-        backgroundColor: Color(0xFFf0f0f0),
-        elevation: 0,
-        title: Text('Dashboard'),
-      ),
-    );
-  }
-}
-
-
-

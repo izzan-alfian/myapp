@@ -17,6 +17,20 @@ class ReportLogistics extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: const Color(0xFF33499e),
         title: const Text('Logistics Report', style: TextStyle(color: Colors.white)),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.search, color: Colors.white),
+            onPressed: () {
+              // Tambahkan logika pencarian di sini
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.add, color: Colors.white),
+            onPressed: () {
+              // Tambahkan logika filter di sini
+            },
+          ),
+        ],
       ),
       body: BlocBuilder<LogisticBloc, LogisticState>(
         builder: (context, state) {

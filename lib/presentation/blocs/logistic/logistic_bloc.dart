@@ -8,13 +8,16 @@ class LogisticBloc extends Bloc<LogisticEvent, LogisticState> {
       : super(LogisticState(
           materialItems: _initialMaterialItems(),
           equipmentItems: _initialEquipmentItems(),
-          isChecked: List.generate(_initialMaterialItems().length, (index) => false), // Initial checkbox for materials
+          isChecked: List.generate(_initialMaterialItems().length, (index) => false),
           isMaterialSelected: true,
+          volumeReceived: List.generate(_initialMaterialItems().length, (index) => null), // Initialize volumeReceived
+         
         )) {
     // Registering event handlers
     on<FetchLogistics>(_onFetchLogistics);
     on<ToggleLogisticType>(_onToggleLogisticType);
     on<ToggleCheckBox>(_onToggleCheckBox);
+    on<SetVolumeReceived>(_onSetVolumeReceived); 
   }
 
   void _onFetchLogistics(FetchLogistics event, Emitter<LogisticState> emit) {
@@ -35,10 +38,29 @@ class LogisticBloc extends Bloc<LogisticEvent, LogisticState> {
     emit(state.copyWith(isMaterialSelected: event.isMaterialSelected, isChecked: newCheckedList));
   }
 
-  void _onToggleCheckBox(ToggleCheckBox event, Emitter<LogisticState> emit) {
+ void _onToggleCheckBox(ToggleCheckBox event, Emitter<LogisticState> emit) {
     List<bool> updatedChecked = List.from(state.isChecked);
+    List<String?> updatedVolumes = List.from(state.volumeReceived);
+
     updatedChecked[event.index] = event.isChecked;
-    emit(state.copyWith(isChecked: updatedChecked));
+
+    if (event.isChecked) {
+      // If checkbox is checked, set Volume Received to Volume Ordered
+      final orderedVolume = state.materialItems[event.index].quantity;
+      updatedVolumes[event.index] = orderedVolume;
+    } else {
+      // If unchecked, reset the Volume Received
+      updatedVolumes[event.index] = null;
+    }
+
+    emit(state.copyWith(isChecked: updatedChecked, volumeReceived: updatedVolumes));
+  }
+
+    void _onSetVolumeReceived(SetVolumeReceived event, Emitter<LogisticState> emit) {
+    List<String?> updatedVolumes = List.from(state.volumeReceived);
+    updatedVolumes[event.index] = event.volume;
+
+    emit(state.copyWith(volumeReceived: updatedVolumes));
   }
 
   // Initial data for material items

@@ -42,3 +42,15 @@ class FetchLogistics extends LogisticEvent {
   @override
   List<Object> get props => [];
 }
+
+
+class SetVolumeReceived extends LogisticEvent {
+  final int index;
+  final String volume;
+
+  SetVolumeReceived({required this.index, required this.volume});
+  
+  @override
+  // TODO: implement props
+  List<Object?> get props => throw UnimplementedError();
+}
